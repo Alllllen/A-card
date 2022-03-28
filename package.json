@@ -1,0 +1,30 @@
+{
+  "name": "acard",
+  "version": "1.0.0",
+  "description": "This project is going to develope an app like D-card",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alllllen/A-card.git"
+  },
+  "author": "allen-tsai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alllllen/A-card/issues"
+  },
+  "homepage": "https://github.com/Alllllen/A-card#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.8",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
