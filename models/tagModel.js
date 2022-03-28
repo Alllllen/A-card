@@ -7,17 +7,18 @@ const tagSchema = new mongoose.Schema(
       type: String,
       required: [true, 'title can not be empty!'],
     },
-    // post: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Post',
-    //   // required: [true, 'Tag must belong to a user'],
-    // },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
+
+tagSchema.virtual('posts', {
+  ref: 'Post',
+  foreignField: 'tag',
+  localField: '_id',
+});
 
 const Tag = mongoose.model('Tag', tagSchema);
 module.exports = Tag;

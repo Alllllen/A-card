@@ -24,15 +24,28 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Post must belong to a user'],
     },
+    // board: [
+    //   {
+    //     type: {
+    //       type: String,
+    //       default: 'BOARD',
+    //       unique: true,
+    //       required: [true, 'Post must belong to a Board'],
+    //     },
+    //     description: String,
+    //   },
+    // ],
     // board: {
     //   type: mongoose.Schema.ObjectId,
     //   ref: 'Board',
     //   // required: [true, 'Post must belong to a Board'],
     // },
-    // tag: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Tag',
-    // },
+    tag: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Tag',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -45,6 +58,14 @@ postSchema.virtual('comments', {
   ref: 'Comment',
   foreignField: 'post',
   localField: '_id',
+});
+
+postSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'tag',
+    select: 'tag',
+  });
+  next();
 });
 
 const Post = mongoose.model('Post', postSchema);
