@@ -5,7 +5,8 @@ const boardSchema = new mongoose.Schema(
   {
     board: {
       type: String,
-      required: [true, 'title can not be empty!'],
+      unique: true,
+      required: [true, 'board can not be empty!'],
     },
     discription: {
       type: String,
@@ -18,6 +19,12 @@ const boardSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+boardSchema.virtual('posts', {
+  ref: 'Post',
+  foreignField: 'board',
+  localField: '_id',
+});
 
 const Board = mongoose.model('Board', boardSchema);
 module.exports = Board;

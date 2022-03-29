@@ -7,10 +7,12 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'content can not be empty!'],
     },
-    like: {
-      type: Number,
-      default: 0,
-    },
+    like: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

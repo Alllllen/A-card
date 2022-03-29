@@ -1,5 +1,6 @@
 const Post = require('./../models/postModel');
 const crud = require('./crudAction');
+const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.setUserIds = (req, res, next) => {

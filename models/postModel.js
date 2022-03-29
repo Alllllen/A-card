@@ -11,10 +11,12 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, 'content can not be empty!'],
     },
-    like: {
-      type: Number,
-      default: 0,
-    },
+    like: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -35,11 +37,11 @@ const postSchema = new mongoose.Schema(
     //     description: String,
     //   },
     // ],
-    // board: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Board',
-    //   // required: [true, 'Post must belong to a Board'],
-    // },
+    board: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Board',
+      required: [true, 'Post must belong to a Board'],
+    },
     tag: [
       {
         type: mongoose.Schema.ObjectId,

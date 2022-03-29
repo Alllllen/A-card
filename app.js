@@ -1,6 +1,7 @@
 const userRoute = require('./routes/userRoute');
 const postRoute = require('./routes/postRoute');
 const tagRoute = require('./routes/tagRoute');
+const boardRoute = require('./routes/boardRoute');
 const commentRoute = require('./routes/commentRoute');
 
 const cookieParser = require('cookie-parser');
@@ -15,6 +16,7 @@ app.use('/api/v1/users', userRoute);
 app.use('/api/v1/posts', postRoute);
 app.use('/api/v1/comments', commentRoute);
 app.use('/api/v1/tags', tagRoute);
+app.use('/api/v1/boards', boardRoute);
 
 app.use(globalErrorHandler);
 

@@ -8,6 +8,8 @@ const postController = require('./../controllers/postController');
 
 router.use('/:postId/comments', commentRoute);
 
+// router.route('/:id/getLikeCount').get(postController.getLikeCount);
+
 router
   .route('/')
   .get(postController.getAllPosts)
