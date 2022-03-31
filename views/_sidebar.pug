@@ -1,0 +1,18 @@
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? 'side-nav--active' : ''}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`img/icons.svg#icon-${icon}`)
+      | #{text}
+sidebar
+  main
+      .user-view
+        nav.user-view__menu
+          ul.side-nav
+            +navItem('/', '熱門文章', 'settings', true)
+            .admin-nav
+              h5.admin-nav__heading 精選看板
+              each board in boards
+                ul.side-nav
+                    +navItem(`/boards/${board._id}`, `${board.board}`, 'map',true)
+                    main

@@ -1,35 +1,97 @@
 const User = require('./../models/userModel');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const crud = require('./crudAction');
+const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
-exports.protect = async (req, res, next) => {
-  try {
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
-      token = req.cookies.jwt;
+// Only for rendered pages, no errors!
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      // if (currentUser.changedPasswordAfter(decoded.iat)) {
+      //   return next();
+      // }
+
+      // THERE IS A LOGGED IN USER
+      req.user = currentUser;
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
     }
-    if (!token) {
-      return next(new AppError('Not logged in!', 400));
-    }
-    console.log(token);
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
-      return next(new AppError('Token belong to the user is not exist', 400));
-    }
-    req.user = currentUser;
-    res.locals.user = currentUser;
-    next();
-  } catch (err) {
-    res.status(400).json({ status: 'error', message: err.message });
   }
+  next();
 };
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+};
+
+exports.getUser = crud.getOne(User);
+exports.updateUser = crud.updateOne(User);
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+  console.log(user);
+  // 2) Check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401));
+  }
+
+  // 3) If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  // User.findByIdAndUpdate will NOT work as intended!
+
+  // 4) Log user in, send JWT
+  createSendToken(200, user, req, res);
+});
+
+// Invalid status code: { _id: new ObjectId("62403eb8a1, __v: 07497624c31a6c6"), name: 'Allen蔡', email: 'jacky2404@gmail.com', role: 'admin', password: '$2a$12$n6TCSzx5nNXy9tLQOaMzdO8v4ngpwIR3/PeWW8LODVrqnvmKzbBoa' }
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
+    return next(new AppError('Not logged in!', 401));
+  }
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new AppError('Token belong to the user is not exist', 401));
+  }
+
+  req.user = currentUser;
+  res.locals.user = currentUser;
+  next();
+});
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -83,6 +145,8 @@ exports.login = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({ status: 'error', message: err.message });
   }
+  req.user = currentUser;
+  res.locals.user = currentUser;
 };
 
 exports.logout = (req, res) => {

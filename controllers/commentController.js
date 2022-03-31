@@ -4,6 +4,7 @@ const crud = require('./crudAction');
 
 exports.setUserIds = (req, res, next) => {
   // Allow nested routes
+  console.log(req);
   if (!req.body.post) req.body.post = req.params.postId;
   if (!req.body.user) req.body.user = req.user._id;
   next();

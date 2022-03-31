@@ -1,0 +1,24 @@
+extends base
+
+block content
+  link(href='/card.css' rel='stylesheet')
+  main.main
+    .login-form
+      h2.heading-secondary.ma-bt-lg 發布貼文
+      form.form.form--creatPost
+        .form__group
+          label.form__label 看版 
+          select#board.form__label 
+            each board in boards 
+              option.form__input(value=board._id)=board.board
+        .form__group
+          label.form__label 標題 
+          input#title.form__input(placeholder='標題', required)
+        .form__group
+          label.form__label 內容
+          textarea#content.form__input(placeholder='內容....', required)
+        .form__group.ma-bt-md 
+          label.form__label(for='password') HASHTAG
+          input#tag.form__input(placeholder='#HASHTAG...', required)
+        .form__group
+          button.btn.btn--green 送出

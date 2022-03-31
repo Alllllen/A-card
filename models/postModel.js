@@ -26,17 +26,6 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Post must belong to a user'],
     },
-    // board: [
-    //   {
-    //     type: {
-    //       type: String,
-    //       default: 'BOARD',
-    //       unique: true,
-    //       required: [true, 'Post must belong to a Board'],
-    //     },
-    //     description: String,
-    //   },
-    // ],
     board: {
       type: mongoose.Schema.ObjectId,
       ref: 'Board',
@@ -64,9 +53,27 @@ postSchema.virtual('comments', {
 
 postSchema.pre(/^find/, function (next) {
   this.populate({
+    path: 'board',
+    select: 'board',
+  });
+
+  this.populate({
     path: 'tag',
     select: 'tag',
   });
+
+  this.populate({
+    path: 'user',
+    select: 'name',
+  });
+  next();
+});
+
+postSchema.pre(/findOne/, function (next) {
+  this.populate({
+    path: 'comments',
+  });
+
   next();
 });
 

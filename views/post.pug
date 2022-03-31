@@ -1,0 +1,55 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? 'side-nav--active' : ''}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`img/icons.svg#icon-${icon}`)
+      | #{text}
+
+block content
+  link(href='/card.css' rel='stylesheet')
+  link(href='/post.css' rel='stylesheet')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css' integrity='sha256-3sPp8BkKUE7QyPSl6VfBByBroQbKxKG7tsusY2mhbVY=' crossorigin='anonymous')
+  link(href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' rel='stylesheet')
+  .container
+    .row
+      .col-md-8
+        .post-content
+          span=post.title
+          .post-container
+            img.profile-photo-md.pull-left(src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='user')
+            .post-detail
+              .user-info
+                h5
+                  a.profile-link=post.user.name
+                p.text-muted=post.createdAt
+              .reaction
+                a.btn.text-green
+                  i.fa.fa-thumbs-up
+                  |  13
+                a.btn.text-red
+                  i.fa.fa-thumbs-down
+                  |  0
+              .line-divider
+              .post-text
+                p
+                  spaan= post.content
+                  i.em.em-anguished
+                  i.em.em-anguished
+                  i.em.em-anguished
+              .line-divider
+              each comment in post.comments
+                .post-comment
+                  img.profile-photo-sm(src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='')
+                  p
+                    a.profile-link=comment.user.name
+                    span=comment.content 
+              .post-comment
+                img.profile-photo-sm(src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='')
+                form.form.form--comment
+                  .form__group.ma-bt-md
+                    label.form__label
+                    input#comment.form__input(type='text', placeholder='Post a comment', required)
+                  .form__group
+                    button.btn.btn--green 送出

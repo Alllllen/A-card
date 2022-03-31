@@ -1,0 +1,63 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? 'side-nav--active' : ''}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`img/icons.svg#icon-${icon}`)
+      | #{text}
+
+block content
+  link(href='/overview.css' rel='stylesheet')
+  link(href='/card.css' rel='stylesheet')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css' integrity='sha256-3sPp8BkKUE7QyPSl6VfBByBroQbKxKG7tsusY2mhbVY=' crossorigin='anonymous')
+  .container
+    nav.navbar-light.bg-light
+      .row
+        .col-lg-10.mx-auto
+          .career-search.mb-6
+            .filter-result
+              each post in posts
+                .container
+                  .category.mb-30
+                    .job
+                      if(post.board)
+                        span.colors4.mb-4=post.board.board
+                      else 
+                        span.colors4.mb-4 post.board.board
+                      h5
+                        a(href=`/posts/${post._id}`)=post.title
+                      ul.place
+                        li
+                          p
+                            svg(xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='currentColor' viewbox='0 0 16 16')
+                              path(d='M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z')
+                            i.fas.fa-map-marker-alt.pe-2=post.createdAt
+                        li
+                          p.ps-5
+                            i.fas.fa-map-marker-alt.pe-2
+                            | Full Time
+                      .pricing.d-flex.justify-content-between.align-items-center
+                        .left
+                          span.time=post.createdAt
+
+          // START Pagination
+          nav(aria-label='Page navigation')
+            ul.pagination.pagination-reset.justify-content-center
+              li.page-item.disabled
+                a.page-link(href='#' tabindex='-1' aria-disabled='true')
+                  i.zmdi.zmdi-long-arrow-left
+              li.page-item
+                a.page-link(href='#') 1
+              li.page-item.d-none.d-md-inline-block
+                a.page-link(href='#') 2
+              li.page-item.d-none.d-md-inline-block
+                a.page-link(href='#') 3
+              li.page-item
+                a.page-link(href='#') ...
+              li.page-item
+                a.page-link(href='#') 8
+              li.page-item
+                a.page-link(href='#')
+                  i.zmdi.zmdi-long-arrow-right
+          // END Pagination

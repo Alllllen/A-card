@@ -31,10 +31,13 @@ const userSchema = new mongoose.Schema({
       message: `Password not equal passwordConfirm`,
     },
   },
-  pairUser: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User',
-  },
+});
+
+// Virtual populate
+userSchema.virtual('relations', {
+  ref: 'Relation',
+  foreignField: 'user',
+  localField: '_id',
 });
 
 userSchema.pre('save', async function (next) {

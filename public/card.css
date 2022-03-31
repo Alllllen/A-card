@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #8d8b8b;
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 14px 10px;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.topnav a:hover {
+  color: black;
+  border-bottom: 3px solid red;
+}
+
+.topnav .active {
+  color: black;
+  border-bottom: 3px solid red;
+}
+
+.category .job {
+  height: 180px;
+  border: 1px solid transparent;
+  padding: 30px 19px 25px 19px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.category .job:hover {
+  border: 1px solid #0d6efd;
+}
+
+.category .job span {
+  padding: 6px 20px;
+  font-weight: 400;
+  border-radius: 26px;
+  display: inline-block;
+}
+
+.category .job .colors1 {
+  font-weight: 800;
+  color: #f27e42;
+  background: #f27e4242;
+}
+
+.category .job .colors2 {
+  font-weight: 800;
+  color: #4294f2;
+  background: rgba(66, 148, 255, 0.26);
+}
+
+.category .job .colors3 {
+  font-weight: 800;
+  color: #2eb98d;
+  background: rgba(46, 185, 141, 0.03);
+}
+
+.category .job .colors4 {
+  font-weight: 800;
+  color: #6a42f2;
+  background: rgba(106, 66, 242, 0.07);
+}
+
+.category .job .colors5 {
+  font-weight: 800;
+  color: #f162bc;
+  background: rgba(241, 98, 188, 0.07);
+}
+
+.category .job .colors2 {
+  font-weight: 800;
+  color: #4294f2;
+  background: rgba(66, 148, 255, 0.26);
+}
+
+a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  color: #071112;
+  text-transform: capitalize;
+  margin-bottom: 17px;
+  display: block;
+}
+
+.place {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding-left: 0px;
+  color: #76787a;
+}
+
+.left {
+  font-weight: 800;
+}
+
+.category .job span.time {
+  font-weight: 900;
+}
+
+.btn.btn-primary {
+  width: 150px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.mb-30 {
+  margin-bottom: 6px;
+}
