@@ -10,6 +10,14 @@ router.use('/:postId/comments', commentRoute);
 
 // router.route('/:id/getLikeCount').get(postController.getLikeCount);
 
+router.patch(
+  '/like',
+  authController.protect,
+  postController.setUserIds,
+  postController.updateLike,
+  postController.updatePost
+);
+
 router
   .route('/')
   .get(postController.getAllPosts)

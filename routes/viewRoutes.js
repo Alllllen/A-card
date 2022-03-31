@@ -7,6 +7,11 @@ const router = express.Router();
 // router.use(viewsController.alerts);
 router.use(viewsController.getSideBar);
 router.get('/', authController.isLoggedIn, viewsController.getOverview);
+router.get(
+  '/overview/:id',
+  authController.isLoggedIn,
+  viewsController.getOverview
+);
 
 // router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);

@@ -48,3 +48,42 @@ export const createComment = async (content) => {
     showAlert('error', err.response.data.message);
   }
 };
+
+export const updateLike = async () => {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `/api/v1/posts/like/`,
+      data: {
+        post: window.location.pathname.split('/')[2],
+      },
+    });
+
+    if (res.data.status === 'success') {
+      showAlert('success', `updated successfully!`);
+      window.setTimeout(() => {
+        location.assign(window.location);
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};
+
+export const deletePost = async (postid) => {
+  try {
+    const res = await axios({
+      method: 'Delete',
+      url: `/api/v1/posts/${postid}`,
+    });
+    console.log(res.status === 204);
+    if (res.status === 204) {
+      showAlert('success', `Delete successfully!`);
+      window.setTimeout(() => {
+        location.assign(window.location);
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};

@@ -2,8 +2,7 @@
 import '@babel/polyfill';
 import { login, logout, regist } from './login';
 import { updateSettings } from './updateSettings';
-import { create, createComment } from './posts';
-import { bookTour } from './stripe';
+import { create, createComment, updateLike, deletePost } from './posts';
 import { showAlert } from './alerts';
 
 // DOM ELEMENTS
@@ -15,6 +14,9 @@ const userPasswordForm = document.querySelector('.form-user-password');
 
 const creatPostForm = document.querySelector('.form--creatPost');
 const creatCommentForm = document.querySelector('.form--comment');
+const updateLikeForm = document.querySelector('.form--like');
+
+const deletePostForm = document.querySelector('.form--deletePost');
 
 const bookBtn = document.getElementById('book-tour');
 
@@ -67,21 +69,14 @@ if (userPasswordForm)
     document.getElementById('password-confirm').value = '';
   });
 
-// if (bookBtn)
-//   bookBtn.addEventListener('click', (e) => {
-//     e.target.textContent = 'Processing...';
-//     const { tourId } = e.target.dataset;
-//     bookTour(tourId);
-//   });
-
 if (creatPostForm)
   creatPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const title = document.getElementById('title').value;
     const content = document.getElementById('content').value;
     const select = document.getElementById('board').value;
-    // const boarId = select.options[select.selectedIndex].value;
-    const tag = document.getElementById('tag').value;
+    const tag = '6241a903ee80052724ffd88b';
+    // const tag = document.getElementById('tag').value;
     create(title, content, select, tag);
   });
 if (creatCommentForm)
@@ -90,6 +85,19 @@ if (creatCommentForm)
     const content = document.getElementById('comment').value;
     createComment(content);
   });
+if (updateLikeForm)
+  updateLikeForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    updateLike();
+  });
+
+if (deletePostForm) {
+  console.log(deletePostForm);
+  deletePostForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    deletePost(e.submitter.id);
+  });
+}
 
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 20);

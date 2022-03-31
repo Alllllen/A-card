@@ -1,21 +1,22 @@
 extends base
 
 block content
+  link(href='/card.css' rel='stylesheet')
   main.main
     .login-form
-      h2.heading-secondary.ma-bt-lg Regist your account
+      h2.heading-secondary.ma-bt-lg 註冊帳號
       form.form.form--regist
         .form__group
-          label.form__label(for='email') Name
+          label.form__label(for='email') 名字
           input#name.form__input(placeholder='蔡亞倫', required)
         .form__group
-          label.form__label(for='email') Email address
+          label.form__label(for='email') Email
           input#email.form__input(type='email', placeholder='you@example.com', required)
         .form__group.ma-bt-md
-          label.form__label(for='password') Password
+          label.form__label(for='password') 密碼
           input#password.form__input(type='password', placeholder='••••••••', required)
         .form__group.ma-bt-md
-          label.form__label(for='password') Password Comfirm
+          label.form__label(for='password') 密碼確認
           input#passwordComfirm.form__input(type='password', placeholder='••••••••', required)
         .form__group
           button.btn.btn--green 送出

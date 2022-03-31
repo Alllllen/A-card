@@ -1,15 +1,16 @@
 extends base
 
 block content
+  link(href='/card.css' rel='stylesheet')
   main
     .login-form
-      h2.heading-secondary.ma-bt-lg Log into your account
+      h2.heading-secondary.ma-bt-lg 登入帳號
       form.form.form--login
         .form__group
-          label.form__label(for='email') Email address
+          label.form__label(for='email') Email
           input#email.form__input(type='email', placeholder='you@example.com', required)
         .form__group.ma-bt-md
-          label.form__label(for='password') Password
+          label.form__label(for='password') 密碼
           input#password.form__input(type='password', placeholder='••••••••', required)
         .form__group
-          button.btn.btn--green Login
+          button.btn.btn--green 登入

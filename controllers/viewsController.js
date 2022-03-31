@@ -19,13 +19,18 @@ exports.getSideBar = catchAsync(async (req, res, next) => {
   next();
 });
 exports.getOverview = catchAsync(async (req, res, next) => {
+  const page = req.params.id;
+  const limit = 5;
+  const skip = (page - 1) * limit;
   // 1) Get tour data from collection
-  const posts = await Post.find().sort('like');
+  const count = await Post.find().count();
+  const posts = await Post.find().sort('-like').skip(skip).limit(limit);
   // 2) Build template
   // 3) Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'A-CARD',
     posts,
+    count,
   });
 });
 
@@ -116,10 +121,12 @@ exports.getPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getBoardPost = catchAsync(async (req, res, next) => {
+  const count = await Board.findById(req.params.id).count();
   const board = await Board.findById(req.params.id).populate({ path: 'posts' });
   const posts = board.posts;
   res.status(200).render('overview', {
     title: 'A-CARD',
     posts,
+    count,
   });
 });

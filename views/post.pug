@@ -25,12 +25,12 @@ block content
                   a.profile-link=post.user.name
                 p.text-muted=post.createdAt
               .reaction
-                a.btn.text-green
-                  i.fa.fa-thumbs-up
-                  |  13
-                a.btn.text-red
-                  i.fa.fa-thumbs-down
-                  |  0
+                form.form.form--like
+                  button#updateLike.btn.text-green-like
+                    if(post.like)
+                      i.fa.fa-thumbs-up=post.like.length 
+                    else 
+                      i.fa.fa-thumbs-up 0
               .line-divider
               .post-text
                 p
