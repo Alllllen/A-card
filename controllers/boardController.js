@@ -1,4 +1,4 @@
-const Board = require('./../models/BoardModel');
+const Board = require('./../models/boardModel');
 const crud = require('./crudAction');
 const AppError = require('./../utils/appError');
 

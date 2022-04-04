@@ -1,5 +1,5 @@
 const Post = require('../models/postModel');
-const Board = require('../models/BoardModel');
+const Board = require('../models/boardModel');
 // const User = require('../models/userModel');
 // const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
