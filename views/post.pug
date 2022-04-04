@@ -1,55 +1,68 @@
 extends base
-
-mixin navItem(link, text, icon, active)
-  li(class=`${active ? 'side-nav--active' : ''}`)
-    a(href=`${link}`)
-      svg
-        use(xlink:href=`img/icons.svg#icon-${icon}`)
-      | #{text}
-
-block content
+block content 
+  link#bootstrap-css(href='//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet')
+  script(src='//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  // ---- Include the above in your HEAD tag --------
   link(href='/card.css' rel='stylesheet')
   link(href='/post.css' rel='stylesheet')
-  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css' integrity='sha256-3sPp8BkKUE7QyPSl6VfBByBroQbKxKG7tsusY2mhbVY=' crossorigin='anonymous')
-  link(href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' rel='stylesheet')
-  .container
-    .row
-      .col-md-8
-        .post-content
-          span=post.title
-          .post-container
-            img.profile-photo-md.pull-left(src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='user')
-            .post-detail
-              .user-info
-                h5
-                  a.profile-link=post.user.name
-                p.text-muted=post.createdAt
-              .reaction
-                form.form.form--like
-                  button#updateLike.btn.text-green-like
-                    if(post.like)
-                      i.fa.fa-thumbs-up=post.like.length 
-                    else 
-                      i.fa.fa-thumbs-up 0
-              .line-divider
-              .post-text
-                p
-                  spaan= post.content
-                  i.em.em-anguished
-                  i.em.em-anguished
-                  i.em.em-anguished
-              .line-divider
-              each comment in post.comments
-                .post-comment
-                  img.profile-photo-sm(src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='')
-                  p
-                    a.profile-link=comment.user.name
-                    span=comment.content 
-              .post-comment
-                img.profile-photo-sm(src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='')
-                form.form.form--comment
-                  .form__group.ma-bt-md
-                    label.form__label
-                    input#comment.form__input(type='text', placeholder='Post a comment', required)
-                  .form__group
-                    button.btn.btn--green 送出
+  link(href='/comment.css' rel='stylesheet')
+  link(href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN' crossorigin='anonymous')
+
+  // Post /////
+  // - \\\\\\\Post
+  .card.gedf-card
+    .card-header
+      .d-flex.justify-content-between.align-items-center
+        .d-flex.justify-content-between.align-items-center
+          .mr-2
+            img.rounded-circle(width='45' src='https://picsum.photos/50/50' alt='')
+          .ml-2
+            .h2.m-0=post.user.name
+            .h7.text-muted Miracles Lee Cross
+    .card-body
+      .text-muted.h7.mb-2
+        i.fa.fa-clock-o=post.createdAt.toString().split('GMT')[0]
+      a.card-link(href='#')
+        h1.card-title=post.title
+      h3.p.card-text=post.content
+    form.form.form--like
+      .card-footer
+        a.card-link
+          button#updateLike.fa.fa-gittip 
+          | LIkE
+          if(post.like)
+            span=post.like.length 
+          else 
+            span 0
+    .card-body
+      .container
+      each comment in post.comments
+          .row
+            .col-sm-5.col-md-6.col-12.pb-4
+              .comment.mt-4.text-justify.float-left
+                img.rounded-circle(src='https://picsum.photos/50/50' alt='' width='40' height='40')
+                h4=comment.user.name
+                span=comment.createdAt.toString().split('GMT')[0]
+                br
+                br
+                h3=comment.content
+              //- .text-justify.darker.mt-4.float-right
+              //-   img.rounded-circle(src='https://picsum.photos/50/50' alt='' width='40' height='40')
+              //-   h4 Rob Simpson
+              //-   span - 20 October, 2018
+      .col-lg-4.col-md-5.col-sm-4.offset-md-1.offset-sm-1.col-12.mt-4
+      form.form.form--comment
+        .form__group.ma-bt-md
+          label.form__label
+          input#comment.form__input(type='text', placeholder='Post a comment', required)
+        .form__group
+          button.btn 送出
+
+  
+  mixin navItem(link, text, icon, active)
+    li(class=`${active ? 'side-nav--active' : ''}`)
+      a(href=`${link}`)
+        svg
+          use(xlink:href=`img/icons.svg#icon-${icon}`)
+        | #{text}
