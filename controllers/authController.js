@@ -145,8 +145,8 @@ exports.login = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({ status: 'error', message: err.message });
   }
-  req.user = currentUser;
-  res.locals.user = currentUser;
+  // req.user = currentUser;
+  // res.locals.user = currentUser;
 };
 
 exports.logout = (req, res) => {
