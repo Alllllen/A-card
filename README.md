@@ -33,7 +33,7 @@ A-card is an app that made by imitating social media "Dcard"
 - 實作CORS
 - 壓縮js檔案達成前端加速
 
-###🛠️ Set up
+### 🛠️ Set up
 - git clone
 - npm install
 - setting config.env file
