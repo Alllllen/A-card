@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 
 const authController = require('./../controllers/authController');
@@ -18,8 +19,8 @@ router.get(
 router.patch(
   '/updateMe',
   authController.protect,
-  authController.getMe,
-  authController.updateUser
+  authController.uploadUserPhoto,
+  authController.updateMe
 );
 
 router.patch(
