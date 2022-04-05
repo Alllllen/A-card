@@ -24,6 +24,7 @@ A-card is an app that made by imitating social media "Dcard"
 - 使用SendGrid第三方Email服務
 - 防止SQLinjection/XSS/CSRF等資安問題
 - 實作CORS
+- 壓縮js檔案達成前端加速
 
 ### Set up
 - git clone
