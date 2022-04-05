@@ -1,7 +1,9 @@
 # A card
 
 A-card is an app that made by imitating social media "Dcard"
-- https://a-card.herokuapp.com/
+- [A-card](https://a-card.herokuapp.com/ "link")
+
+
 ### Application
 - 可註冊/登入帳號
 - 可以使用忘記密碼，會寄送驗證郵寄至註冊的信箱
