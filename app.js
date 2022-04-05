@@ -5,7 +5,7 @@ const tagRoute = require('./routes/tagRoute');
 const boardRoute = require('./routes/boardRoute');
 const commentRoute = require('./routes/commentRoute');
 const viewRoute = require('./routes/viewRoutes');
-const cors = requre('cors');
+const cors = require('cors');
 
 const cookieParser = require('cookie-parser');
 const globalErrorHandler = require('./controllers/errorController');
