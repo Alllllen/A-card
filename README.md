@@ -2,8 +2,8 @@
 
 
 ### 📚Description
-A-card is an app that made by imitating social media "Dcard"
-- [A-card](https://a-card.herokuapp.com/ "link")
+Acard is an app that made by imitating social media "Dcard"
+- [Acard](https://a-card.herokuapp.com/ "link")
 
 ### ✨Application
 - 可註冊/登入帳號
