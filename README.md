@@ -19,4 +19,4 @@ This is an app that made by imitating social media "Dcard"
 - use index and compound index to speed up searching
 - Dockerized this app
 - Deploy to Heroku
-- - 使用stripe串接金流
+- 使用stripe串接金流
