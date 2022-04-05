@@ -17,3 +17,4 @@ This is an app that made by imitating social media "Dcard"
 - Use jwt to implement authentication
 - use index and compound index to speed up searching
 - Dockerized this app
+- Deploy to Heroku
