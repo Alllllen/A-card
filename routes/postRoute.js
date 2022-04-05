@@ -13,7 +13,7 @@ router.use('/:postId/comments', commentRoute);
 router.patch(
   '/like',
   authController.protect,
-  postController.setUserIds,
+  // postController.setUserIds,
   postController.updateLike,
   postController.updatePost
 );
