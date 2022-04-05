@@ -11,14 +11,14 @@ This is an app that made by imitating social media "Dcard"
 
 ### Tech
 - Use Node.js and express as Backend
-- Use simple pug css and javascripts and boostrap as Frontend
-- MVC architecture
-- MongoDB and it's ODM Mongoose as database
+- Use pug css javascripts and boostrap as Frontend
+- Use MVC architecture
+- Use MongoDB and it's ODM Mongoose as database
 - Use jwt to implement authentication
-- use index and compound index to speed up searching
+- Use index and compound index to speed up searching
 - Dockerized this app
-- Deploy to Heroku
+- Deploy this app to Heroku
 - 使用stripe串接金流
-- 使用NodeMailer/SendGrid等第三方Email服務
+- 使用SendGrid第三方Email服務
 - 防止SQLinjection/XSS/CSRF等資安問題
 - 實作CORS
