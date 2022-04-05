@@ -5,6 +5,7 @@ const tagRoute = require('./routes/tagRoute');
 const boardRoute = require('./routes/boardRoute');
 const commentRoute = require('./routes/commentRoute');
 const viewRoute = require('./routes/viewRoutes');
+const cors = requre('cors');
 
 const cookieParser = require('cookie-parser');
 const globalErrorHandler = require('./controllers/errorController');
@@ -15,6 +16,13 @@ const app = express();
 // app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
+
+// implement cors
+app.use(cors());
+//access-controal-allow-origin
+// app.use(cors({ origin: 'https://www.natours.com' }));
+app.options('*', cors());
+// app.options('/api/v1/tours', cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
