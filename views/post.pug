@@ -16,14 +16,14 @@ block content
       .d-flex.justify-content-between.align-items-center
         .d-flex.justify-content-between.align-items-center
           .mr-2
-            img.rounded-circle(width='45' src='https://picsum.photos/50/50' alt='')
+            img.nav__user-img(src=`/img/users/${post.user.photo}` alt=`Photo of ${post.user.name}`)
           .ml-2
             .h2.m-0=post.user.name
-            .h7.text-muted Miracles Lee Cross
+
     .card-body
       .text-muted.h7.mb-2
         i.fa.fa-clock-o=post.createdAt.toString().split('GMT')[0]
-      a.card-link(href='#')
+      a.card-link
         h1.card-title=post.title
       h3.p.card-text=post.content
     form.form.form--like
@@ -41,16 +41,14 @@ block content
           .row
             .col-sm-5.col-md-6.col-12.pb-4
               .comment.mt-4.text-justify.float-left
-                img.rounded-circle(src='https://picsum.photos/50/50' alt='' width='40' height='40')
-                h4=comment.user.name
-                span=comment.createdAt.toString().split('GMT')[0]
+                .d-flex.justify-content-between.align-items-center
+                  .d-flex.justify-content-between.align-items-center
+                    img.nav__user-img(src=`/img/users/${comment.user.photo}` alt=`Photo of ${comment.user.name}`)
+                    h4=comment.user.name
+                  //- h8=comment.createdAt.toString().split('GMT')[0]
                 br
                 br
                 h3=comment.content
-              //- .text-justify.darker.mt-4.float-right
-              //-   img.rounded-circle(src='https://picsum.photos/50/50' alt='' width='40' height='40')
-              //-   h4 Rob Simpson
-              //-   span - 20 October, 2018
       .col-lg-4.col-md-5.col-sm-4.offset-md-1.offset-sm-1.col-12.mt-4
       form.form.form--comment
         .form__group.ma-bt-md
