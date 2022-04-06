@@ -24,7 +24,7 @@ Acard is an app that made by imitating social media "Dcard"
 - Deploy this app to Heroku
 - 使用stripe串接金流
 - 使用SendGrid第三方Email服務
-- 防止SQLinjection/XSS/CSRF等資安問題
+- 防止SQL-injection/XSS/CSRF等資安問題
 - 實作CORS
 - 壓縮js檔案達成前端加速
 
