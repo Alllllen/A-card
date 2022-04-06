@@ -1341,3 +1341,32 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+.image_container {
+  height: 120px;
+  width: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 10px;
+}
+.image_container img {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+.image_container span {
+  top: -6px;
+  right: 8px;
+  color: red;
+  font-size: 28px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+#display_image {
+  /* width: 50px;
+  height: 50px; */
+  border: 1px solid black;
+  background-position: center;
+  background-size: cover;
+}

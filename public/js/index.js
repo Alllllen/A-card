@@ -18,8 +18,6 @@ const updateLikeForm = document.querySelector('.form--like');
 
 const deletePostForm = document.querySelector('.form--deletePost');
 
-const bookBtn = document.getElementById('book-tour');
-
 // DELEGATION
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
@@ -99,6 +97,69 @@ if (deletePostForm) {
     e.preventDefault();
     deletePost(e.submitter.id);
   });
+}
+
+const image_input = document.querySelector('#photo');
+var uploaded_image;
+if (image_input)
+  image_input.addEventListener('change', function () {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      uploaded_image = reader.result;
+      document.querySelector(
+        `#display_image`
+      ).style.backgroundImage = `url(${uploaded_image})`;
+    });
+    reader.readAsDataURL(this.files[0]);
+  });
+
+const postImage_input = document.querySelector('#postImage');
+let images = [];
+if (postImage_input)
+  postImage_input.addEventListener('change', function () {
+    image_select();
+    console.log(images);
+  });
+
+function image_select() {
+  var image = document.getElementById('postImage').files;
+  for (let i = 0; i < image.length; i++) {
+    if (check_duplicate(image[i].name)) {
+      images.push({
+        name: image[i].name,
+        url: URL.createObjectURL(image[i]),
+        file: image[i],
+      });
+    } else {
+      alert(image[i].name + ' is already added to the list');
+    }
+  }
+  // document.getElementById('form').reset();
+  document.getElementById('container').innerHTML = image_show();
+}
+function image_show() {
+  var image = '';
+  images.forEach((i) => {
+    image +=
+      `<div class="image_container d-flex justify-content-center position-relative">
+            <img src="` +
+      i.url +
+      `" alt="Image">
+        </div>`;
+  });
+  return image;
+}
+function check_duplicate(name) {
+  var image = true;
+  if (images.length > 0) {
+    for (let e = 0; e < images.length; e++) {
+      if (images[e].name == name) {
+        image = false;
+        break;
+      }
+    }
+  }
+  return image;
 }
 
 const alertMessage = document.querySelector('body').dataset.alert;

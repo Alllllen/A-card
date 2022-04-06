@@ -2,8 +2,10 @@ extends base
 
 block content
   link(href='/card.css' rel='stylesheet')
+  //- link(href='/css/style.css' rel='stylesheet')
   main.main
     .login-form
+      img.form__user-photo(src=`/img/users/${user.photo}`, alt='User photo')
       h2.heading-secondary.ma-bt-lg 發布貼文
       form.form.form--creatPost
         .form__group
@@ -17,8 +19,22 @@ block content
         .form__group
           label.form__label 內容
           textarea#content.form__input(placeholder='內容....', required)
+          //- input.form__upload(type='file',id='photo')
+          //- label(for='photo') Choose Picture
+          //- #display_image
+        .form__group
+          label.form__label 上傳圖片
+          .container.mt-3.w-100
+            .card.shadow-sm.w-100
+              .card-header.d-flex.justify-content-between
+                  input.form__upload(type='file', accept='image/*', id='postImage', name='postImage')
+                  label(for='postImage') Choose new photo
+              #container.card-body.d-flex.flex-wrap.justify-content-start
+
         //- .form__group.ma-bt-md 
           //- label.form__label(for='password') HASHTAG
           //- input#tag.form__input(placeholder='#HASHTAG...', required)
+          
+          
         .form__group
-          button.btn.btn--green 送出
+          button.btn.btn--small.btn--green Submmit

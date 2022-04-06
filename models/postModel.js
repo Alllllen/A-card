@@ -37,6 +37,7 @@ const postSchema = new mongoose.Schema(
         ref: 'Tag',
       },
     ],
+    images: [String],
   },
   {
     toJSON: { virtuals: true },

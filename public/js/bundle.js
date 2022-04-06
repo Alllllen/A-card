@@ -9527,8 +9527,7 @@ var userPasswordForm = document.querySelector('.form-user-password');
 var creatPostForm = document.querySelector('.form--creatPost');
 var creatCommentForm = document.querySelector('.form--comment');
 var updateLikeForm = document.querySelector('.form--like');
-var deletePostForm = document.querySelector('.form--deletePost');
-var bookBtn = document.getElementById('book-tour'); // DELEGATION
+var deletePostForm = document.querySelector('.form--deletePost'); // DELEGATION
 
 if (loginForm) loginForm.addEventListener('submit', function (e) {
   e.preventDefault();
@@ -9616,6 +9615,65 @@ if (deletePostForm) {
     e.preventDefault();
     (0, _posts.deletePost)(e.submitter.id);
   });
+}
+
+var image_input = document.querySelector('#photo');
+var uploaded_image;
+if (image_input) image_input.addEventListener('change', function () {
+  var reader = new FileReader();
+  reader.addEventListener('load', function () {
+    uploaded_image = reader.result;
+    document.querySelector("#display_image").style.backgroundImage = "url(".concat(uploaded_image, ")");
+  });
+  reader.readAsDataURL(this.files[0]);
+});
+var postImage_input = document.querySelector('#postImage');
+var images = [];
+if (postImage_input) postImage_input.addEventListener('change', function () {
+  image_select();
+  console.log(images);
+});
+
+function image_select() {
+  var image = document.getElementById('postImage').files;
+
+  for (var i = 0; i < image.length; i++) {
+    if (check_duplicate(image[i].name)) {
+      images.push({
+        name: image[i].name,
+        url: URL.createObjectURL(image[i]),
+        file: image[i]
+      });
+    } else {
+      alert(image[i].name + ' is already added to the list');
+    }
+  } // document.getElementById('form').reset();
+
+
+  document.getElementById('container').innerHTML = image_show();
+}
+
+function image_show() {
+  var image = '';
+  images.forEach(function (i) {
+    image += "<div class=\"image_container d-flex justify-content-center position-relative\">\n            <img src=\"" + i.url + "\" alt=\"Image\">\n        </div>";
+  });
+  return image;
+}
+
+function check_duplicate(name) {
+  var image = true;
+
+  if (images.length > 0) {
+    for (var e = 0; e < images.length; e++) {
+      if (images[e].name == name) {
+        image = false;
+        break;
+      }
+    }
+  }
+
+  return image;
 }
 
 var alertMessage = document.querySelector('body').dataset.alert;
