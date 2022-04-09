@@ -27,7 +27,7 @@ Acard is an app that made by imitating social media "Dcard"
 - 防止SQL-injection/XSS/CSRF等資安問題
 - 實作CORS
 - 壓縮js檔案達成前端加速
-- 使用redis cache data 來達到梗快的搜尋速度
+- 使用redis cache data 來達到更快的搜尋速度
 
 ### 🛠️ Set up
 - git clone
