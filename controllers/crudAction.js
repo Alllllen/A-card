@@ -2,6 +2,12 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures');
 
+const redis = require('redis');
+const client = redis.createClient(); // this creates a new client
+client.on('connect', () => {
+  console.log('Redis client connected');
+});
+
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
@@ -52,7 +58,9 @@ exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
     if (popOptions) query = query.populate(popOptions);
-    const doc = await query;
+    //redis search
+    const doc = await getOrSetCache(`${req.originalUrl}`, query);
+    // const doc = await query;
 
     if (!doc) {
       return next(new AppError('No document found with that ID', 404));
@@ -79,7 +87,10 @@ exports.getAll = (Model, popOptions) =>
       .paginate();
     // const doc = await features.query.explain();
     if (popOptions) features.query = features.query.populate(popOptions);
-    const doc = await features.query;
+
+    //redis search
+    const doc = await getOrSetCache(`${req.originalUrl}`, features.query);
+    // const doc = await features.query;
 
     // SEND RESPONSE
     res.status(200).json({
@@ -90,3 +101,15 @@ exports.getAll = (Model, popOptions) =>
       },
     });
   });
+
+const getOrSetCache = (key, cb) => {
+  return new Promise((resolve, reject) => {
+    client.get(key, async (error, data) => {
+      if (error) return reject(error.message);
+      if (data != null) return resolve(JSON.parse(data));
+      const newData = await cb;
+      client.setex(key, process.env.REDIS_EXPIRATION, JSON.stringify(newData));
+      resolve(newData);
+    });
+  });
+};

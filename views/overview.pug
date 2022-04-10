@@ -39,7 +39,8 @@ block content
                               span.time=post.like.length
                             else 
                               i.fas.fa-map-marker-alt.pe-2 0
-                        button(id=post._id).btn.colors1.mb-4 Delete
+                        if(req.user && req.user.role==='admin')
+                          button(id=post._id).btn.colors1.mb-4 Delete
 
           // START Pagination
           nav(aria-label='Page navigation')

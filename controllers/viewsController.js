@@ -5,13 +5,32 @@ const Board = require('../models/boardModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-exports.alerts = (req, res, next) => {
-  const { alert } = req.query;
-  if (alert === 'booking')
-    res.locals.alert =
-      "Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediatly, please come back later.";
-  next();
+//redis
+const redis = require('redis');
+const client = redis.createClient(); // this creates a new client
+client.on('connect', () => {
+  console.log('Redis client connected');
+});
+const REDIS_EXPIRATION = 3600;
+const getOrSetCache = (key, cb) => {
+  return new Promise((resolve, reject) => {
+    client.get(key, async (error, data) => {
+      if (error) return reject(error.message);
+      if (data != null) return resolve(JSON.parse(data));
+      const newData = await cb;
+      client.setex(key, REDIS_EXPIRATION, JSON.stringify(newData));
+      resolve(newData);
+    });
+  });
 };
+
+// exports.alerts = (req, res, next) => {
+//   const { alert } = req.query;
+//   if (alert === 'booking')
+//     res.locals.alert =
+//       "Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediatly, please come back later.";
+//   next();
+// };
 exports.getSideBar = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
   const boards = await Board.find();
@@ -24,13 +43,19 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   const skip = (page - 1) * limit;
   // 1) Get tour data from collection
   const count = await Post.find().count();
-  const posts = await Post.find().sort('-like').skip(skip).limit(limit);
+  //redis search
+  const posts = await getOrSetCache(
+    `${req.originalUrl}`,
+    Post.find().sort('-like').skip(skip).limit(limit)
+  );
+  // const posts = await Post.find().sort('-like').skip(skip).limit(limit);
   // 2) Build template
   // 3) Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'A-CARD',
     posts,
     count,
+    req,
   });
 });
 
@@ -128,5 +153,6 @@ exports.getBoardPost = catchAsync(async (req, res, next) => {
     title: 'A-CARD',
     posts,
     count,
+    req,
   });
 });
