@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const arrayUniquePlugin = require('mongoose-unique-array');
 // const User = require('./userModel');
 
 const postSchema = new mongoose.Schema(
@@ -15,6 +16,7 @@ const postSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
+        unique: true,
       },
     ],
     createdAt: {
@@ -44,6 +46,7 @@ const postSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+postSchema.plugin(arrayUniquePlugin);
 
 // Virtual populate
 postSchema.virtual('comments', {
@@ -51,6 +54,11 @@ postSchema.virtual('comments', {
   foreignField: 'post',
   localField: '_id',
 });
+
+// postSchema.pre('save', function (next) {
+//   this.like = _.uniq(this.like);
+//   next();
+// });
 
 postSchema.pre(/^find/, function (next) {
   this.populate({

@@ -31,14 +31,11 @@ block content
                           a(href=`/posts/${post._id}`)=post.title
                       ul.place
                         li
-                          i.fas.fa-map-marker-alt.pe-2=post.createdAt.toString().split('GMT')[0]     
+                          i.fas.fa-map-marker-alt.pe-2=Math.floor(post.createdAt/ (1000 * 60 * 60 * 24)).toString()+'天前'  
                       .pricing.d-flex.justify-content-between.align-items-center
                         .left
                           span.colors5.mb-3 LIKE :
-                            if(post.like)
-                              span.time=post.like.length
-                            else 
-                              i.fas.fa-map-marker-alt.pe-2 0
+                            span.time=post.like.length
                         if(req.user && req.user.role==='admin')
                           button(id=post._id).btn.colors1.mb-4 Delete
 
