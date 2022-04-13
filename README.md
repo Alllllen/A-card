@@ -22,7 +22,7 @@ Acard is an app made by imitating social media "Dcard"
 - Use index and compound index to speed up searching
 - Dockerized the app
 - Deploy this app to Heroku
-- Avoid SQL-injection/XSS/CSRF等資安問題
+- Avoid information security issues like SQL injection/XSS/CSRF etc. 
 - Implement CORS
 - Compress the js file to speed up in frontend part
 <!-- - Use stripe串接金流 -->
