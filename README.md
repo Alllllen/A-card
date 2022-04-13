@@ -16,7 +16,7 @@ Acard is an app made by imitating social media "Dcard"
 ### 💡Tech
 - Use Node.js and express as Backend
 - Use pug css javascripts and boostrap as Frontend
-- Use MongoDB and it's ODM Mongoose as database
+- Use MongoDB and it's ODM Mongoose as a database
 - Use Redis to cache data 來達到更快的搜尋速度
 - Use jwt to implement authentication
 - Use index and compound index to speed up searching
@@ -26,7 +26,7 @@ Acard is an app made by imitating social media "Dcard"
 - Use SendGrid第三方Email服務
 - Avoid SQL-injection/XSS/CSRF等資安問題
 - Implement CORS
-- Compress js file to speed up in frontend part
+- Compress the js file to speed up in frontend part
 
 ### 🛠️ Set up
 - git clone
