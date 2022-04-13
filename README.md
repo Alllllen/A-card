@@ -2,7 +2,7 @@
 
 
 ### 📚Description
-Acard is an app that made by imitating social media "Dcard"
+Acard is an app made by imitating social media "Dcard"
 - [Acard](https://a-card.herokuapp.com/ "link")
 
 ### ✨Application
