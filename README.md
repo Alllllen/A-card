@@ -6,24 +6,24 @@ Acard is an app made by imitating social media "Dcard"
 - [Acard](https://a-card.herokuapp.com/ "link")
 
 ### ✨Application
-- 可註冊/登入帳號
-- 帳號中心可以變更個人資料/上傳大頭照
-- 可以使用忘記密碼，會寄送驗證郵寄至註冊的信箱
-- 可發表/編輯/刪除自己的文章
-- 可對文章進行留言跟按讚
-- 左側可以觀看特定類別文章和當前熱門文章(24小時內最多讚的)
+- Register/Login account available
+- Account center can change personal information/upload headshots
+<!-- - You can use the forgotten password, and a verification mail will be sent to the registered mailbox -->
+- You can post/edit/delete your own articles
+- You can leave comments and like the article
+- On the left side you can view specific categories of articles and current popular articles (most liked in 24 hours)
 
 ### 💡Tech
 - Use Node.js and express as Backend
 - Use pug css javascripts and boostrap as Frontend
 - Use MongoDB and it's ODM Mongoose as a database
-- Use Redis to cache data 來達到更快的搜尋速度
+- Use Redis to cache data to achieve faster search speeds
 - Use jwt to implement authentication
 - Use index and compound index to speed up searching
 - Dockerized the app
 - Deploy this app to Heroku
-- Use stripe串接金流
-- Use SendGrid第三方Email服務
+<!-- - Use stripe串接金流 -->
+<!-- - Use SendGrid第三方Email服務 -->
 - Avoid SQL-injection/XSS/CSRF等資安問題
 - Implement CORS
 - Compress the js file to speed up in frontend part
