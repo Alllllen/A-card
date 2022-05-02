@@ -33,3 +33,12 @@ Acard is an app made by imitating social media "Dcard"
 - npm install
 - docker run
 - setting config.env file
+
+### 🦶 Roadmap
+- [x] System Design
+- [x] Implement most of the function
+- [ ] Using redis and socket.io to implement chatting room
+- [ ] Using AWS S3 store image datas
+- [ ] Multi-language Support
+    - [ ] Chinese
+    - [ ] English
