@@ -37,7 +37,8 @@ Acard is an app made by imitating social media "Dcard"
 ### 🦶 Roadmap
 - [x] System Design
 - [x] Implement most of the function
-- [ ] Adding tag function
+- [ ] Implement tag function
+- [ ] Impement 抽卡 system
 - [ ] Using redis and socket.io to implement chatting room
 - [ ] Using AWS S3 store image datas
 - [ ] Multi-language Support
