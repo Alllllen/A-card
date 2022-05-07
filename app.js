@@ -5,6 +5,7 @@ const tagRoute = require('./routes/tagRoute');
 const boardRoute = require('./routes/boardRoute');
 const commentRoute = require('./routes/commentRoute');
 const viewRoute = require('./routes/viewRoutes');
+const relationRoute = require('./routes/relationRoute');
 const cors = require('cors');
 
 const cookieParser = require('cookie-parser');
@@ -20,9 +21,7 @@ app.set('views', path.join(__dirname, 'views'));
 // implement cors
 app.use(cors());
 //access-controal-allow-origin
-// app.use(cors({ origin: 'https://www.natours.com' }));
 app.options('*', cors());
-// app.options('/api/v1/tours', cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,7 +34,19 @@ app.use('/api/v1/posts', postRoute);
 app.use('/api/v1/comments', commentRoute);
 app.use('/api/v1/tags', tagRoute);
 app.use('/api/v1/boards', boardRoute);
-
+app.use('/api/v1/relations', relationRoute);
 app.use(globalErrorHandler);
+
+//shcedule
+const schedule = require('node-schedule');
+const relationController = require('./controllers/relationController');
+let rule = new schedule.RecurrenceRule();
+rule.minute = new schedule.Range(0, 59, 5);
+// pair action
+let job = schedule.scheduleJob(rule, () => {
+  console.log(new Date());
+  relationController.clearPair();
+  relationController.makePair();
+});
 
 module.exports = app;

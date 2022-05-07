@@ -2,7 +2,8 @@
 import '@babel/polyfill';
 import { login, logout, regist } from './login';
 import { updateSettings } from './updateSettings';
-import { create, createComment, updateLike, deletePost } from './posts';
+import { create, createComment, deletePost, updateLike } from './posts';
+import { disacceptFriend, acceptFriend } from './cards';
 import { showAlert } from './alerts';
 
 // DOM ELEMENTS
@@ -11,11 +12,15 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
-
+//寫文章、留言
 const creatPostForm = document.querySelector('.form--creatPost');
 const creatCommentForm = document.querySelector('.form--comment');
+// 案文章讚
 const updateLikeForm = document.querySelector('.form--like');
-
+//抽卡
+const agreeFriendForm = document.querySelector('.agreeFriend');
+const disagreeFriendForm = document.querySelector('.disagreeFriend');
+//刪除貼文
 const deletePostForm = document.querySelector('.form--deletePost');
 
 // DELEGATION
@@ -68,7 +73,7 @@ if (userPasswordForm)
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
   });
-
+//POST
 if (creatPostForm)
   creatPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -90,15 +95,26 @@ if (updateLikeForm)
     e.preventDefault();
     updateLike();
   });
-
 if (deletePostForm) {
-  console.log(deletePostForm);
+  // console.log(deletePostForm);
   deletePostForm.addEventListener('submit', (e) => {
     e.preventDefault();
     deletePost(e.submitter.id);
   });
 }
+//抽卡
+if (agreeFriendForm)
+  agreeFriendForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    acceptFriend();
+  });
 
+if (disagreeFriendForm)
+  disagreeFriendForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    disacceptFriend();
+  });
+//上傳照片POST
 const image_input = document.querySelector('#photo');
 var uploaded_image;
 if (image_input)
@@ -112,7 +128,6 @@ if (image_input)
     });
     reader.readAsDataURL(this.files[0]);
   });
-
 const postImage_input = document.querySelector('#postImage');
 let images = [];
 if (postImage_input)
@@ -120,7 +135,6 @@ if (postImage_input)
     image_select();
     console.log(images);
   });
-
 function image_select() {
   var image = document.getElementById('postImage').files;
   for (let i = 0; i < image.length; i++) {

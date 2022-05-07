@@ -130,3 +130,12 @@ a {
 .mb-30 {
   margin-bottom: 6px;
 }
+
+.single-line-center {
+  text-align: center;
+}
+
+.multi-line-left {
+  display: inline-block;
+  text-align: left;
+}

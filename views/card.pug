@@ -1,0 +1,13 @@
+extends base
+
+block content
+  link(href='/card.css' rel='stylesheet')
+  main.main
+    .login-form
+      img(src=`/img/users/${pair.photo}`, alt='User photo')
+      h2.heading-secondary.ma-bt-lg=pair.name
+        .form__group
+          form.agreeFriend        
+            button.btn.btn--small.btn--green 加好友
+          form.disagreeFriend  
+            button.btn.btn--small.btn--green 忍痛拒絕

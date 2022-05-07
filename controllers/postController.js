@@ -4,7 +4,6 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 const multer = require('multer');
-const sharp = require('sharp');
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {

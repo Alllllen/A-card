@@ -1,10 +1,12 @@
 const Post = require('../models/postModel');
 const Board = require('../models/boardModel');
+const Relation = require('../models/relationModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 //redis
 const redis = require('redis');
+const user = require('../models/userModel');
 const client = redis.createClient(); // this creates a new client
 client.on('connect', () => {
   console.log('Redis client connected');
@@ -21,7 +23,6 @@ const getOrSetCache = (key, cb) => {
     });
   });
 };
-
 exports.getSideBar = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
   const boards = await Board.find();
@@ -33,10 +34,11 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   const limit = 5;
   const skip = (page - 1) * limit;
   const currentDate = new Date();
-  // 1) Get tour data from collection
+
   //redis search
   // const posts = await getOrSetCache(`${req.originalUrl}`);
-  const count = await getOrSetCache('post:count', Post.find().count());
+  const count = Post.find().count();
+  // const count = await getOrSetCache('post:count', Post.find().count());
 
   const pre = await Post.aggregate([
     {
@@ -65,10 +67,9 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     select: 'photo',
   });
   const posts = await Post.populate(pre, {
-    path: 'posts',
+    path: 'board',
     select: 'board',
   });
-
   // 3) Build and Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'A-CARD',
@@ -123,7 +124,28 @@ exports.getBoardPost = catchAsync(async (req, res, next) => {
     req,
   });
 });
-
+exports.getCard = catchAsync(async (req, res, next) => {
+  const relation = await Relation.findOne({
+    $and: [
+      {
+        $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
+      },
+      { isFriend: false },
+    ],
+  });
+  if (relation.userOne.id === req.user.id) {
+    pair = relation.userTwo;
+  } else {
+    pair = relation.userOne;
+  }
+  console.log(pair);
+  // console.log(relation);
+  // const relation = await Relation.find();
+  res.status(200).render('card', {
+    title: 'A-CARD',
+    pair,
+  });
+});
 // exports.alerts = (req, res, next) => {
 //   const { alert } = req.query;
 //   if (alert === 'booking')
