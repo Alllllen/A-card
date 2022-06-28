@@ -17,8 +17,8 @@ router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/regist', authController.isLoggedIn, viewsController.getRegistForm);
 router.get('/me', authController.protect, viewsController.getAccount);
 router.get('/writePost', authController.protect, viewsController.getPostform);
-router.get('/card', authController.protect, viewsController.getCard);
-router.get('/message', authController.protect, viewsController.getMessage);
+router.get('/cards', authController.protect, viewsController.getCard);
+router.get('/messages', authController.protect, viewsController.getMessage);
 
 // router.post(
 //   '/submit-user-data',
@@ -29,6 +29,11 @@ router.get('/message', authController.protect, viewsController.getMessage);
 router.get('/posts/:id', authController.isLoggedIn, viewsController.getPost);
 router.get(
   '/boards/:id',
+  authController.isLoggedIn,
+  viewsController.getBoardPost
+);
+router.get(
+  '/messages/:id',
   authController.isLoggedIn,
   viewsController.getBoardPost
 );

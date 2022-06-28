@@ -211,35 +211,17 @@ $(function () {
     log(message);
   };
 
-  // Sets the client's username
-  const setUsername = () => {
-    username = cleanInput($usernameInput.val().trim());
-
-    // If the username is valid
-    if (username) {
-      $loginPage.fadeOut();
-      $chatPage.show();
-      $loginPage.off('click');
-      $currentInput = $inputMessage.focus();
-
-      // Tell the server your username
-      socket.emit('add user', username);
-    }
-  };
-
   // Sends a chat message
   const sendMessage = () => {
     let message = $inputMessage.val();
 
     // Prevent markup from being injected into the message
     message = cleanInput(message);
-    console.log(message, connected);
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
-      addChatMessage({ username, message });
+      addChatMessage({ from: 'replies', username, message });
       // tell server to execute 'new message' and send along one parameter
-      console.log('new message');
       socket.emit('new message', message);
     }
   };
@@ -253,14 +235,8 @@ $(function () {
   // Adds the visual chat message to the message list
   const addChatMessage = (data, options = {}) => {
     // Don't fade the message in if there is an 'X was typing'
-    const $typingMessages = getTypingMessages(data);
-    if ($typingMessages.length !== 0) {
-      options.fade = false;
-      $typingMessages.remove();
-    }
-
-    // const $usernameDiv = $('<span class="username"/>').text(data.username);
-    const $messageBodyDiv = $('<li class="replies">')
+    $('.typing').remove();
+    const $messageBodyDiv = $(`<li class=${data.from}>`)
       // .text(data.message)
       .append(`<p>${data.message}</p>`);
 
@@ -275,14 +251,15 @@ $(function () {
 
   // Adds the visual chat typing message
   const addChatTyping = (data) => {
+    data.from = 'sent';
     data.typing = true;
-    data.message = 'is typing';
+    data.message = 'is typing...';
     addChatMessage(data);
   };
 
   // Removes the visual chat typing message
   const removeChatTyping = (data) => {
-    getTypingMessages(data).fadeOut(function () {
+    $('.typing').fadeOut(function () {
       $(this).remove();
     });
   };
@@ -343,12 +320,13 @@ $(function () {
     }
   };
 
-  // Gets the 'X is typing' messages of a user
-  const getTypingMessages = (data) => {
-    return $('.typing.message').filter(function (i) {
-      return $(this).data('username') === data.username;
-    });
-  };
+  // // Gets the 'X is typing' messages of a user
+  // const getTypingMessages = (data) => {
+  //   return $('.typing').filter(function (i) {
+  //     true;
+  //     // return $(this).data('username') === data.username;
+  //   });
+  // };
 
   //  Keyboard events
   $window.keydown((event) => {
@@ -358,19 +336,14 @@ $(function () {
     }
     // When the client hits ENTER on their keyboard
     if (event.which === 13) {
-      if (true) {
-        console.log('Enter');
-        sendMessage();
-        socket.emit('stop typing');
-        typing = false;
-      } else {
-        setUsername();
-      }
+      console.log('Enter');
+      sendMessage();
+      socket.emit('stop typing');
+      typing = false;
     }
   });
 
   $inputMessage.on('input', () => {
-    console.log('type');
     updateTyping();
   });
 
@@ -393,9 +366,9 @@ $(function () {
     connected = true;
     // Display the welcome message
     const message = 'Welcome to Socket.IO Chat - ';
-    log(message, {
-      prepend: true,
-    });
+    // log(message, {
+    //   prepend: true,
+    // });
     addParticipantsMessage(data);
   });
 
@@ -406,7 +379,7 @@ $(function () {
 
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', (data) => {
-    log(`${data.username} joined`);
+    // log(`${data.username} joined`);
     addParticipantsMessage(data);
   });
 
