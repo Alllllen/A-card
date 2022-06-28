@@ -1,6 +1,7 @@
 const Post = require('../models/postModel');
 const Board = require('../models/boardModel');
 const Relation = require('../models/relationModel');
+const crud = require('./crudAction');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -9,7 +10,7 @@ const redis = require('redis');
 const user = require('../models/userModel');
 const client = redis.createClient(); // this creates a new client
 client.on('connect', () => {
-  console.log('Redis client connected');
+  console.log('Redis client connected(views)');
 });
 const REDIS_EXPIRATION = 3600;
 const getOrSetCache = (key, cb) => {
@@ -37,31 +38,32 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 
   //redis search
   // const posts = await getOrSetCache(`${req.originalUrl}`);
-  const count = Post.find().count();
-  // const count = await getOrSetCache('post:count', Post.find().count());
-
-  const pre = await Post.aggregate([
-    {
-      $project: {
-        user: 1,
-        title: 1,
-        like: 1,
-        createdAt: { $subtract: [currentDate, '$createdAt'] },
-        board: 1,
-        title: 1,
-        numLikes: { $size: '$like' },
+  const count = await getOrSetCache('post:count', Post.find().count());
+  const pre = await getOrSetCache(
+    'overview',
+    Post.aggregate([
+      {
+        $project: {
+          user: 1,
+          title: 1,
+          like: 1,
+          createdAt: { $subtract: [currentDate, '$createdAt'] },
+          board: 1,
+          title: 1,
+          numLikes: { $size: '$like' },
+        },
       },
-    },
-    {
-      $sort: { numLikes: -1 },
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
-    },
-  ]);
+      {
+        $sort: { numLikes: -1 },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+    ])
+  );
   await Post.populate(pre, {
     path: 'user',
     select: 'photo',
@@ -70,6 +72,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     path: 'board',
     select: 'board',
   });
+
   // 3) Build and Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'A-CARD',
@@ -146,6 +149,31 @@ exports.getCard = catchAsync(async (req, res, next) => {
     pair,
   });
 });
+exports.getMessage = catchAsync(async (req, res, next) => {
+  const relations = await Relation.find({
+    $and: [
+      {
+        $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
+      },
+      { isFriend: true },
+    ],
+  });
+  let pairs = new Array();
+  relations.forEach((relation) => {
+    if (relation.userOne.id === req.user.id) {
+      pairs.push(relation.userTwo);
+    } else {
+      pairs.push(relation.userOne);
+    }
+  });
+
+  console.log(pairs);
+  res.status(200).render('messageBox', {
+    title: 'A-CARD',
+    pairs,
+  });
+});
+
 // exports.alerts = (req, res, next) => {
 //   const { alert } = req.query;
 //   if (alert === 'booking')

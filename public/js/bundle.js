@@ -8930,7 +8930,7 @@ var logout = /*#__PURE__*/function () {
 
           case 3:
             res = _context3.sent;
-            if (res.data.status = 'success') location.reload(true);
+            if (res.data.status = 'success') location = '/';
             _context3.next = 11;
             break;
 
@@ -9668,8 +9668,7 @@ if (userDataForm) userDataForm.addEventListener('submit', function (e) {
   var form = new FormData();
   form.append('name', document.getElementById('name').value);
   form.append('email', document.getElementById('email').value);
-  form.append('photo', document.getElementById('photo').files[0]); // console.log(form);
-
+  form.append('photo', document.getElementById('photo').files[0]);
   (0, _updateSettings.updateSettings)(form, 'data');
 });
 if (userPasswordForm) userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {
@@ -9807,6 +9806,267 @@ function check_duplicate(name) {
 }
 
 var alertMessage = document.querySelector('body').dataset.alert;
-if (alertMessage) (0, _alerts.showAlert)('success', alertMessage, 20);
+if (alertMessage) (0, _alerts.showAlert)('success', alertMessage, 20); //socket io
+
+$(function () {
+  var FADE_TIME = 150; // ms
+
+  var TYPING_TIMER_LENGTH = 400; // ms
+  // Initialize variables
+
+  var $window = $(window);
+  var $usernameInput = $('.usernameInput'); // Input for username
+
+  var $messages = $('.messages'); // Messages area
+
+  var $inputMessage = $('.inputMessage'); // Input message input box
+
+  var $loginPage = $('.login.page'); // The login page
+
+  var $chatPage = $('.chat.page'); // The chatroom page
+
+  var socket = io(); // Prompt for setting a username
+
+  var username = 'jacky';
+  var connected = true;
+  var typing = false;
+  var lastTypingTime;
+  var $currentInput = $usernameInput.focus();
+
+  var addParticipantsMessage = function addParticipantsMessage(data) {
+    var message = '';
+
+    if (data.numUsers === 1) {
+      message += "there's 1 participant";
+    } else {
+      message += "there are ".concat(data.numUsers, " participants");
+    }
+
+    log(message);
+  }; // Sets the client's username
+
+
+  var setUsername = function setUsername() {
+    username = cleanInput($usernameInput.val().trim()); // If the username is valid
+
+    if (username) {
+      $loginPage.fadeOut();
+      $chatPage.show();
+      $loginPage.off('click');
+      $currentInput = $inputMessage.focus(); // Tell the server your username
+
+      socket.emit('add user', username);
+    }
+  }; // Sends a chat message
+
+
+  var sendMessage = function sendMessage() {
+    var message = $inputMessage.val(); // Prevent markup from being injected into the message
+
+    message = cleanInput(message);
+    console.log(message, connected); // if there is a non-empty message and a socket connection
+
+    if (message && connected) {
+      $inputMessage.val('');
+      addChatMessage({
+        username: username,
+        message: message
+      }); // tell server to execute 'new message' and send along one parameter
+
+      console.log('new message');
+      socket.emit('new message', message);
+    }
+  }; // Log a message
+
+
+  var log = function log(message, options) {
+    var $el = $('<li>').addClass('log').text(message);
+    addMessageElement($el, options);
+  }; // Adds the visual chat message to the message list
+
+
+  var addChatMessage = function addChatMessage(data) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    // Don't fade the message in if there is an 'X was typing'
+    var $typingMessages = getTypingMessages(data);
+
+    if ($typingMessages.length !== 0) {
+      options.fade = false;
+      $typingMessages.remove();
+    } // const $usernameDiv = $('<span class="username"/>').text(data.username);
+
+
+    var $messageBodyDiv = $('<li class="replies">') // .text(data.message)
+    .append("<p>".concat(data.message, "</p>"));
+    var typingClass = data.typing ? 'typing' : '';
+    var $messageDiv = $('<ul/>') // .data('username', data.username)
+    .addClass(typingClass).append($messageBodyDiv);
+    addMessageElement($messageDiv, options);
+  }; // Adds the visual chat typing message
+
+
+  var addChatTyping = function addChatTyping(data) {
+    data.typing = true;
+    data.message = 'is typing';
+    addChatMessage(data);
+  }; // Removes the visual chat typing message
+
+
+  var removeChatTyping = function removeChatTyping(data) {
+    getTypingMessages(data).fadeOut(function () {
+      $(this).remove();
+    });
+  }; // Adds a message element to the messages and scrolls to the bottom
+  // el - The element to add as a message
+  // options.fade - If the element should fade-in (default = true)
+  // options.prepend - If the element should prepend
+  //   all other messages (default = false)
+
+
+  var addMessageElement = function addMessageElement(el, options) {
+    var $el = $(el); // Setup default options
+
+    if (!options) {
+      options = {};
+    }
+
+    if (typeof options.fade === 'undefined') {
+      options.fade = true;
+    }
+
+    if (typeof options.prepend === 'undefined') {
+      options.prepend = false;
+    } // Apply options
+
+
+    if (options.fade) {
+      $el.hide().fadeIn(FADE_TIME);
+    }
+
+    if (options.prepend) {
+      $messages.prepend($el);
+    } else {
+      $messages.append($el);
+    }
+
+    $messages[0].scrollTop = $messages[0].scrollHeight;
+  }; // Prevents input from having injected markup
+
+
+  var cleanInput = function cleanInput(input) {
+    return $('<div/>').text(input).html();
+  }; // Updates the typing event
+
+
+  var updateTyping = function updateTyping() {
+    if (connected) {
+      if (!typing) {
+        typing = true;
+        socket.emit('typing');
+      }
+
+      lastTypingTime = new Date().getTime();
+      setTimeout(function () {
+        var typingTimer = new Date().getTime();
+        var timeDiff = typingTimer - lastTypingTime;
+
+        if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
+          socket.emit('stop typing');
+          typing = false;
+        }
+      }, TYPING_TIMER_LENGTH);
+    }
+  }; // Gets the 'X is typing' messages of a user
+
+
+  var getTypingMessages = function getTypingMessages(data) {
+    return $('.typing.message').filter(function (i) {
+      return $(this).data('username') === data.username;
+    });
+  }; //  Keyboard events
+
+
+  $window.keydown(function (event) {
+    // Auto-focus the current input when a key is typed
+    if (!(event.ctrlKey || event.metaKey || event.altKey)) {
+      $currentInput.focus();
+    } // When the client hits ENTER on their keyboard
+
+
+    if (event.which === 13) {
+      if (true) {
+        console.log('Enter');
+        sendMessage();
+        socket.emit('stop typing');
+        typing = false;
+      } else {
+        setUsername();
+      }
+    }
+  });
+  $inputMessage.on('input', function () {
+    console.log('type');
+    updateTyping();
+  }); // Click events
+  // Focus input when clicking anywhere on login page
+
+  $loginPage.click(function () {
+    $currentInput.focus();
+  }); // Focus input when clicking on the message input's border
+
+  $inputMessage.click(function () {
+    $inputMessage.focus();
+  }); // Socket events
+  // Whenever the server emits 'login', log the login message
+
+  socket.on('login', function (data) {
+    connected = true; // Display the welcome message
+
+    var message = 'Welcome to Socket.IO Chat - ';
+    log(message, {
+      prepend: true
+    });
+    addParticipantsMessage(data);
+  }); // Whenever the server emits 'new message', update the chat body
+
+  socket.on('new message', function (data) {
+    addChatMessage(data);
+  }); // Whenever the server emits 'user joined', log it in the chat body
+
+  socket.on('user joined', function (data) {
+    log("".concat(data.username, " joined"));
+    addParticipantsMessage(data);
+  }); // Whenever the server emits 'user left', log it in the chat body
+
+  socket.on('user left', function (data) {
+    log("".concat(data.username, " left"));
+    addParticipantsMessage(data);
+    removeChatTyping(data);
+  }); // Whenever the server emits 'typing', show the typing message
+
+  socket.on('typing', function (data) {
+    addChatTyping(data);
+  }); // Whenever the server emits 'stop typing', kill the typing message
+
+  socket.on('stop typing', function (data) {
+    removeChatTyping(data);
+  });
+  socket.on('disconnect', function () {
+    log('you have been disconnected');
+  });
+  socket.io.on('reconnect', function () {
+    log('you have been reconnected');
+
+    if (username) {
+      socket.emit('add user', username);
+    }
+  });
+  socket.io.on('reconnect_error', function () {
+    log('attempt to reconnect has failed');
+  });
+  socket.on('room-brocast', function (message) {
+    log(message);
+  });
+});
 },{"core-js/modules/es6.array.copy-within.js":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill.js":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.filter.js":"../../node_modules/core-js/modules/es6.array.filter.js","core-js/modules/es6.array.find.js":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index.js":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.from.js":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes.js":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator.js":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.map.js":"../../node_modules/core-js/modules/es6.array.map.js","core-js/modules/es6.array.of.js":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.slice.js":"../../node_modules/core-js/modules/es6.array.slice.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es6.array.species.js":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive.js":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance.js":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name.js":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map.js":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh.js":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh.js":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh.js":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt.js":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32.js":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh.js":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1.js":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround.js":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot.js":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul.js":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p.js":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10.js":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2.js":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign.js":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh.js":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh.js":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc.js":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor.js":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon.js":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite.js":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer.js":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan.js":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer.js":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer.js":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer.js":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float.js":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int.js":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign.js":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter.js":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter.js":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries.js":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze.js":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors.js":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names.js":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of.js":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter.js":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter.js":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions.js":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.to-string.js":"../../node_modules/core-js/modules/es6.object.to-string.js","core-js/modules/es6.object.is.js":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen.js":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed.js":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible.js":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys.js":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal.js":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es6.object.set-prototype-of.js":"../../node_modules/core-js/modules/es6.object.set-prototype-of.js","core-js/modules/es7.object.values.js":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise.js":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply.js":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct.js":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property.js":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property.js":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get.js":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has.js":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible.js":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys.js":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions.js":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set.js":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor.js":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags.js":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match.js":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace.js":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split.js":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search.js":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string.js":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set.js":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol.js":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor.js":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big.js":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink.js":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold.js":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at.js":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with.js":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed.js":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor.js":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize.js":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point.js":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes.js":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics.js":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator.js":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link.js":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start.js":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end.js":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw.js":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat.js":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small.js":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with.js":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike.js":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub.js":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup.js":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/es6.typed.array-buffer.js":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array.js":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array.js":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array.js":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array.js":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array.js":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array.js":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array.js":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map.js":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set.js":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime.js":"../../node_modules/regenerator-runtime/runtime.js","./login":"login.js","./updateSettings":"updateSettings.js","./posts":"posts.js","./cards":"cards.js","./alerts":"alerts.js"}]},{},["index.js"], null)
 //# sourceMappingURL=bundle.js.map

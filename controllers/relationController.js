@@ -6,7 +6,12 @@ const AppError = require('./../utils/appError');
 
 exports.agreeRelation = catchAsync(async (req, res, next) => {
   const relation = await Relation.findOne({
-    $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
+    $and: [
+      {
+        $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
+      },
+      { isFriend: false },
+    ],
   });
   if (relation.relation === '0') relation.relation = '1';
   else if (relation.relation === '1') relation.isFriend = true;

@@ -18,6 +18,7 @@ router.get('/regist', authController.isLoggedIn, viewsController.getRegistForm);
 router.get('/me', authController.protect, viewsController.getAccount);
 router.get('/writePost', authController.protect, viewsController.getPostform);
 router.get('/card', authController.protect, viewsController.getCard);
+router.get('/message', authController.protect, viewsController.getMessage);
 
 // router.post(
 //   '/submit-user-data',

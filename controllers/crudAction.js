@@ -5,7 +5,7 @@ const APIFeatures = require('./../utils/apiFeatures');
 const redis = require('redis');
 const client = redis.createClient(); // this creates a new client
 client.on('connect', () => {
-  console.log('Redis client connected');
+  console.log('Redis client connected(Crud ACtion)');
 });
 
 exports.deleteOne = (Model) =>
@@ -87,7 +87,7 @@ exports.getAll = (Model, popOptions) =>
       .paginate();
     // const doc = await features.query.explain();
     if (popOptions) features.query = features.query.populate(popOptions);
-
+    // const doc = await features.query;
     //redis search
     const doc = await getOrSetCache(`${req.originalUrl}`, features.query);
     // const doc = await features.query;

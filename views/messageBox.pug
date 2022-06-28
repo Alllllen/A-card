@@ -1,0 +1,54 @@
+extends message
+block content 
+
+  link(rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css')
+  link(rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css')
+  #frame
+    #sidepanel
+      #contacts
+        each pair in pairs
+          ul
+            li.contact     
+              .wrap
+                span.contact-status.online
+                img(src=`/img/users/${pair.photo}` alt=`Photo of ${pair.name}`)
+                .meta
+                  p.name=pair.name
+                  p.preview You just got LITT up, Mike.
+    .content
+      .messages
+        ul
+          li.sent
+            img(src='http://emilcarlsson.se/assets/mikeross.png' alt='')
+            p
+              | How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!
+          li.replies
+            img(src='http://emilcarlsson.se/assets/harveyspecter.png' alt='')
+            p When you&apos;re backed against the wall, break the god damn thing down.
+          li.replies
+            img(src='http://emilcarlsson.se/assets/harveyspecter.png' alt='')
+            p Excuses don&apos;t win championships.
+          li.sent
+            img(src='http://emilcarlsson.se/assets/mikeross.png' alt='')
+            p Oh yeah, did Michael Jordan tell you that?
+          li.replies
+            img(src='http://emilcarlsson.se/assets/harveyspecter.png' alt='')
+            p No, I told him that.
+          li.replies
+            img(src='http://emilcarlsson.se/assets/harveyspecter.png' alt='')
+            p What are your choices when someone puts a gun to your head?
+          li.sent
+            img(src='http://emilcarlsson.se/assets/mikeross.png' alt='')
+            p What are you talking about? You do what they say or they shoot you.
+          li.replies
+            img(src='http://emilcarlsson.se/assets/harveyspecter.png' alt='')
+            p Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.
+      .message-input
+        .wrap
+          input(type='text' class="inputMessage" placeholder='Write your message...')
+          button.submit
+            i.fa.fa-paper-plane(aria-hidden='true')
+
+  script(src='../assets/dist/js/bootstrap.bundle.min.js')
+  script(src="https://code.jquery.com/jquery-1.10.2.min.js")
+  script(src="/socket.io/socket.io.js")
