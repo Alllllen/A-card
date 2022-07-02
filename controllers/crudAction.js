@@ -1,12 +1,13 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures');
+const { client, setex, get } = require('.././utils/redis');
 
-const redis = require('redis');
-const client = redis.createClient(); // this creates a new client
-client.on('connect', () => {
-  console.log('Redis client connected(Crud ACtion)');
-});
+// const redis = require('redis');
+// const client = redis.createClient(); // this creates a new client
+// client.on('connect', () => {
+//   console.log('Redis client connected(Crud ACtion)');
+// });
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -104,11 +105,11 @@ exports.getAll = (Model, popOptions) =>
 
 const getOrSetCache = (key, cb) => {
   return new Promise((resolve, reject) => {
-    client.get(key, async (error, data) => {
+    get(key, async (error, data) => {
       if (error) return reject(error.message);
       if (data != null) return resolve(JSON.parse(data));
       const newData = await cb;
-      client.setex(key, process.env.REDIS_EXPIRATION, JSON.stringify(newData));
+      setex(key, process.env.REDIS_EXPIRATION, JSON.stringify(newData));
       resolve(newData);
     });
   });

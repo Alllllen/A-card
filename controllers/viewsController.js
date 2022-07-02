@@ -167,7 +167,7 @@ exports.getMessage = catchAsync(async (req, res, next) => {
     }
   });
 
-  console.log(pairs);
+  // console.log(pairs);
   res.status(200).render('messageBox', {
     title: 'A-CARD',
     pairs,

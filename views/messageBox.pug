@@ -9,18 +9,18 @@ block content
         each pair in pairs
           ul
             li.contact
-              a(href=`messages/${pair._id}`)     
+              a(href=`/messages/${pair._id}`)     
                 .wrap
                   span.contact-status.offline
                   img(src=`/img/users/${pair.photo}` alt=`Photo of ${pair.name}`)
                   .meta
                     p.name=pair.name
-                    p.preview You just got LITT up, Mike.
+                    p.preview="..."
     .content
       .messages
       .message-input
         .wrap
-          input(type='text' class="inputMessage" placeholder='Write your message...')
+          input(type='text' class="inputMessage" placeholder='Write your message...' style="display;")
 
   script(src='../assets/dist/js/bootstrap.bundle.min.js')
   script(src="https://code.jquery.com/jquery-1.10.2.min.js")

@@ -23,7 +23,7 @@ header
           li.nav-item
             a.nav-link.link-dark.px-2.nav__el(href='/me')
               img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-              span.nav-link.link-dark.px-2.nav__el=user.name.split(' ')[0]
+              span.nav-link.link-dark.px-2=user.name.split(' ')[0]
           li.nav-item
             a.nav-link.link-dark.px-2.nav__el--logout(href='/') Log Out
         else

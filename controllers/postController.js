@@ -47,6 +47,5 @@ exports.updateLike = catchAsync(async (req, res, next) => {
   req.body.like.push(req.user.id);
   // }
   req.params.id = req.body.post;
-  // req.body.like = req.user.like;
   next();
 });

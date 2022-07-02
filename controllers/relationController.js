@@ -2,7 +2,6 @@ const User = require('./../models/userModel');
 const Relation = require('./../models/relationModel');
 const crud = require('./crudAction');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 
 exports.agreeRelation = catchAsync(async (req, res, next) => {
   const relation = await Relation.findOne({

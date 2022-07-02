@@ -35,7 +35,7 @@ router.get(
 router.get(
   '/messages/:id',
   authController.isLoggedIn,
-  viewsController.getBoardPost
+  viewsController.getMessage
 );
 
 module.exports = router;
