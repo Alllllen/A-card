@@ -39,6 +39,7 @@ Acard is an app made by imitating social media "Dcard"
 - [x] System Design
 - [x] Implement most of the function
 - [ ] Implement tag function
+- [ ] 通知系統
 - [x] Impement 抽卡 system (10.時先將配對好的資訊緩存放入redis，避免了00:00一到，大量需求訪問直接打到後端的資料庫，可能導致mongodb不堪負荷。至於如果狀態有更新(ex:兩人都按了接受，所以雙方成為朋友)，此處選擇直接使用write through，因為我認為此時的瓶頸只有read，一般人不會一抽卡就立刻按下是否同意好友，而是會思考一下，所以此處讀的量能不會在成後端資料庫crash
 - [x] Using redis and socket.io to implement chatting room (使用 write back 在聊天結束後或聊天一段時間過後，將聊天資料寫入 primary database)
 - [ ] Using AWS S3 store image datas
