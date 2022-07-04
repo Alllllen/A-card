@@ -2,13 +2,13 @@
 
 
 ### 📚Description
-Acard is an app made by imitating social media "Dcard"
-- [Acard](https://a-card.herokuapp.com/ "link")
+   Acard is an app made by imitating social media "Dcard"
+<!-- - [Acard](https://a-card.herokuapp.com/ "link") -->
 
 ### ✨Application
 - Register/Login account
 - Account center can change personal information/upload headshots
-- Post/edit/delete articles
+- Post/Edit/Delete articles
 - Leave comments and give the article a like
 - View specific categories of articles and current popular articles (most liked in 24 hours)
 - 抽卡配對機制(每晚12點會隨機配對兩人，如果兩人都按下確認，則成為好友)
@@ -32,14 +32,15 @@ Acard is an app made by imitating social media "Dcard"
 <!-- - Use SendGrid第三方Email服務 -->
 
 ### 🛠️ Set up
-- git clone
-- npm install
-- docker run
-- setting config.env file
+-     git clone
+-     npm install
+-     docker run
+-     setting config.env file
 
 ### 🦶 Roadmap
 - [x] System Design
 - [x] Implement most of the function
+- [ ] Unit test
 - [ ] Implement tag function
 - [ ] 通知系統
 - [ ] Using AWS S3 store image datas
