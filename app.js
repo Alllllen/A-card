@@ -37,16 +37,4 @@ app.use('/api/v1/boards', boardRoute);
 app.use('/api/v1/relations', relationRoute);
 app.use(globalErrorHandler);
 
-//shcedule
-const schedule = require('node-schedule');
-const relationController = require('./controllers/relationController');
-let rule = new schedule.RecurrenceRule();
-rule.minute = new schedule.Range(0, 59, 15);
-// pair action
-let job = schedule.scheduleJob(rule, () => {
-  console.log(new Date());
-  relationController.clearPair();
-  relationController.makePair();
-});
-
 module.exports = app;

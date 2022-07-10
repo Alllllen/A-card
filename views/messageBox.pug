@@ -20,7 +20,8 @@ block content
       .messages
       .message-input
         .wrap
-          input(type='text' class="inputMessage" placeholder='Write your message...' style="display;")
+         if inRoom
+           input(type='text' class="inputMessage" placeholder='Write your message...' style="display;")
 
   script(src='../assets/dist/js/bootstrap.bundle.min.js')
   script(src="https://code.jquery.com/jquery-1.10.2.min.js")

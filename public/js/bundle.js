@@ -9472,9 +9472,8 @@ function message() {
         $messages.prepend($el);
       } else {
         $messages.append($el);
-      }
+      } // $messages[0].scrollTop = $messages[0].scrollHeight;
 
-      $messages[0].scrollTop = $messages[0].scrollHeight;
     }; // Prevents input from having injected markup
 
 

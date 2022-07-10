@@ -1,6 +1,6 @@
 const User = require('./../models/userModel');
 const Relation = require('./../models/relationModel');
-const crud = require('./crudAction');
+const { hset, hgetall } = require('.././utils/redis');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.agreeRelation = catchAsync(async (req, res, next) => {
@@ -13,7 +13,13 @@ exports.agreeRelation = catchAsync(async (req, res, next) => {
     ],
   });
   if (relation.relation === '0') relation.relation = '1';
-  else if (relation.relation === '1') relation.isFriend = true;
+  else if (relation.relation === '1') {
+    relation.isFriend = true;
+    const pair = await hgetall(`user:${String(req.user._id)}:pair`);
+    console.log('Become Friend', pair['pairUser']);
+    await hset(`user:${pair['pairUser']}:pair`, 'statement', 'agree');
+    await hset(`user:${String(req.user._id)}:pair`, 'statement', 'agree');
+  }
   relation.save();
   res.status(200).json({
     status: 'success',
@@ -41,14 +47,13 @@ const randArr = (num, arr) => {
   return arr;
 };
 exports.makePair = catchAsync(async (req, res, next) => {
-  const user = await User.find().select('_id');
+  const user = await User.find().select('_id photo name');
   const randUser = randArr(user.length, user);
   let users = [];
   randUser.forEach((el) => {
     users.push(el);
   });
   // const randUser = randArr(user.length, user);
-  //   console.log(randRelation);
   const isfriend = await Relation.find({ isFriend: true });
   let friends = new Set();
   isfriend.forEach((el) => {
@@ -68,16 +73,51 @@ exports.makePair = catchAsync(async (req, res, next) => {
     } else {
       users.pop();
       users.pop();
-      //   console.log(obj);
+      //put pairing status into redis and db
+      await hset(
+        `user:${String(obj['userOne']['_id'])}:pair`,
+        'pairUser',
+        String(obj['userTwo']['_id'])
+      );
+      await hset(
+        `user:${String(obj['userOne']['_id'])}:pair`,
+        'statement',
+        'disagree'
+      );
+      await hset(
+        `user:${String(obj['userOne']['_id'])}:pair`,
+        'photo',
+        String(obj['userTwo']['photo'])
+      );
+      await hset(
+        `user:${String(obj['userOne']['_id'])}:pair`,
+        'name',
+        String(obj['userTwo']['name'])
+      );
+      await hset(
+        `user:${String(obj['userTwo']['_id'])}:pair`,
+        'pairUser',
+        String(obj['userOne']['_id'])
+      );
+      await hset(
+        `user:${String(obj['userTwo']['_id'])}:pair`,
+        'statement',
+        'disagree'
+      );
+      await hset(
+        `user:${String(obj['userTwo']['_id'])}:pair`,
+        'photo',
+        String(obj['userOne']['photo'])
+      );
+      await hset(
+        `user:${String(obj['userTwo']['_id'])}:pair`,
+        'name',
+        String(obj['userOne']['name'])
+      );
       const doc = await Relation.create(obj);
     }
   }
 });
 exports.clearPair = catchAsync(async (req, res, next) => {
   const doc = await Relation.deleteMany({ isFriend: false });
-  //   next();
-  //   res.status(204).json({
-  //     status: 'success',
-  //     data: null,
-  //   });
 });

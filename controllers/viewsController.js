@@ -1,27 +1,24 @@
 const Post = require('../models/postModel');
 const Board = require('../models/boardModel');
 const Relation = require('../models/relationModel');
-const crud = require('./crudAction');
+// const crud = require('./crudAction');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
 
 //redis
-const redis = require('redis');
-const user = require('../models/userModel');
-const client = redis.createClient(); // this creates a new client
-client.on('connect', () => {
-  console.log('Redis client connected(views)');
-});
-const REDIS_EXPIRATION = 3600;
+const { client, hgetall, setex, get } = require('.././utils/redis');
+
 const getOrSetCache = (key, cb) => {
-  return new Promise((resolve, reject) => {
-    client.get(key, async (error, data) => {
-      if (error) return reject(error.message);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await get(key);
       if (data != null) return resolve(JSON.parse(data));
       const newData = await cb;
-      client.setex(key, REDIS_EXPIRATION, JSON.stringify(newData));
+      setex(key, process.env.REDIS_EXPIRATION, JSON.stringify(newData));
       resolve(newData);
-    });
+    } catch {
+      return reject(error.message);
+    }
   });
 };
 exports.getSideBar = catchAsync(async (req, res, next) => {
@@ -128,28 +125,27 @@ exports.getBoardPost = catchAsync(async (req, res, next) => {
   });
 });
 exports.getCard = catchAsync(async (req, res, next) => {
-  const relation = await Relation.findOne({
-    $and: [
-      {
-        $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
-      },
-      { isFriend: false },
-    ],
-  });
-  if (relation.userOne.id === req.user.id) {
-    pair = relation.userTwo;
-  } else {
-    pair = relation.userOne;
-  }
-  console.log(pair);
-  // console.log(relation);
-  // const relation = await Relation.find();
+  const pair = await hgetall(`user:${String(req.user._id)}:pair`);
+  // const relation = await Relation.findOne({
+  //   $and: [
+  //     {
+  //       $or: [{ userOne: req.user._id }, { userTwo: req.user._id }],
+  //     },
+  //     { isFriend: false },
+  //   ],
+  // });
+  // if (relation.userOne.id === req.user.id) {
+  //   pair = relation.userTwo;
+  // } else {
+  //   pair = relation.userOne;
+  // }
   res.status(200).render('card', {
     title: 'A-CARD',
     pair,
   });
 });
 exports.getMessage = catchAsync(async (req, res, next) => {
+  const inRoom = req.url.split('messages/')[1] !== undefined;
   const relations = await Relation.find({
     $and: [
       {
@@ -167,10 +163,10 @@ exports.getMessage = catchAsync(async (req, res, next) => {
     }
   });
 
-  // console.log(pairs);
   res.status(200).render('messageBox', {
     title: 'A-CARD',
     pairs,
+    inRoom,
   });
 });
 

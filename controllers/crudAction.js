@@ -104,13 +104,13 @@ exports.getAll = (Model, popOptions) =>
   });
 
 const getOrSetCache = (key, cb) => {
-  return new Promise((resolve, reject) => {
-    get(key, async (error, data) => {
-      if (error) return reject(error.message);
+  return new Promise(
+    catchAsync(async (resolve, reject) => {
+      const data = await get(key);
       if (data != null) return resolve(JSON.parse(data));
       const newData = await cb;
       setex(key, process.env.REDIS_EXPIRATION, JSON.stringify(newData));
       resolve(newData);
-    });
-  });
+    })
+  );
 };

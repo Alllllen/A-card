@@ -10,7 +10,7 @@ const DB = process.env.DATABASE.replace(
 );
 mongoose
   .connect(DB)
-  .then(() => console.log('DB connect success'))
+  .then(() => console.log('MongoDB connected'))
   .catch((err) => {
     console.log(err.message);
   });
@@ -27,9 +27,9 @@ const AppError = require('./utils/appError');
 const User = require('./models/userModel');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const { exists, set, get, sadd, zadd, zrevrange } = require('./utils/redis');
+const { sadd, zadd, zrevrange } = require('./utils/redis');
 
-async function authentication(socket) {
+async function authentication(socket, next) {
   let CookieJwt = '';
   if (socket.handshake.headers.cookie.includes('jwt')) {
     CookieJwt = socket.handshake.headers.cookie.split('jwt=')[1].split(';')[0];
@@ -66,7 +66,10 @@ let currentUser = {};
 io.use(
   catchAsync(async (socket, next) => {
     // Authentication
-    decoded = await authentication(socket);
+    decoded = await authentication(socket, next);
+    if (!decoded) {
+      return next(new AppError('Not logged in!', 401));
+    }
     // // Find it's ID and Friend's ID
     currentUser[socket.id] = await User.findById(decoded.id);
     next();
@@ -165,3 +168,18 @@ io.use(
     });
   })
 );
+
+//shcedule
+const schedule = require('node-schedule');
+const relationController = require('./controllers/relationController');
+let rule = new schedule.RecurrenceRule();
+rule.minute = new schedule.Range(0, 59, 15);
+// pair action
+schedule.scheduleJob(rule, () => {
+  console.log(
+    'Making pair...',
+    new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
+  );
+  relationController.clearPair();
+  relationController.makePair();
+});
