@@ -27,6 +27,17 @@ exports.setUserIds = (req, res, next) => {
   next();
 };
 
+exports.updateLike = catchAsync(async (req, res, next) => {
+  post = await Post.findById(req.body.post);
+  req.body.like = post.like.slice(0);
+  // console.log(req.body.like.id);
+  // if (!req.body.like.includes(req.user.id)) {
+  req.body.like.push(req.user.id);
+  // }
+  req.params.id = req.body.post;
+  next();
+});
+
 exports.getAllPosts = crud.getAll(Post, {
   path: 'comments',
   select: 'content like user createdAt',
@@ -37,15 +48,4 @@ exports.deletePost = crud.deleteOne(Post);
 exports.getPost = crud.getOne(Post, {
   path: 'comments',
   select: 'content like user createdAt',
-});
-
-exports.updateLike = catchAsync(async (req, res, next) => {
-  post = await Post.findById(req.body.post);
-  req.body.like = post.like.slice(0);
-  // console.log(req.body.like.id);
-  // if (!req.body.like.includes(req.user.id)) {
-  req.body.like.push(req.user.id);
-  // }
-  req.params.id = req.body.post;
-  next();
 });

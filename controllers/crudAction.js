@@ -1,13 +1,7 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures');
-const { client, setex, get } = require('.././utils/redis');
-
-// const redis = require('redis');
-// const client = redis.createClient(); // this creates a new client
-// client.on('connect', () => {
-//   console.log('Redis client connected(Crud ACtion)');
-// });
+const { setex, get } = require('.././utils/redis');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {

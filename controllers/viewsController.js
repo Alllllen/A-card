@@ -1,12 +1,10 @@
 const Post = require('../models/postModel');
 const Board = require('../models/boardModel');
 const Relation = require('../models/relationModel');
-// const crud = require('./crudAction');
 const catchAsync = require('../utils/catchAsync');
-// const AppError = require('../utils/appError');
 
 //redis
-const { client, hgetall, setex, get } = require('.././utils/redis');
+const { hgetall, setex, get } = require('.././utils/redis');
 
 const getOrSetCache = (key, cb) => {
   return new Promise(async (resolve, reject) => {
@@ -145,7 +143,7 @@ exports.getCard = catchAsync(async (req, res, next) => {
   });
 });
 exports.getMessage = catchAsync(async (req, res, next) => {
-  const inRoom = req.url.split('messages/')[1] !== undefined;
+  const inRoom = true; //req.url.split('messages/')[1] !== undefined;
   const relations = await Relation.find({
     $and: [
       {
@@ -162,7 +160,6 @@ exports.getMessage = catchAsync(async (req, res, next) => {
       pairs.push(relation.userOne);
     }
   });
-
   res.status(200).render('messageBox', {
     title: 'A-CARD',
     pairs,

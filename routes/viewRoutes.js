@@ -20,12 +20,6 @@ router.get('/writePost', authController.protect, viewsController.getPostform);
 router.get('/cards', authController.protect, viewsController.getCard);
 router.get('/messages', authController.protect, viewsController.getMessage);
 
-// router.post(
-//   '/submit-user-data',
-//   authController.protect,
-//   viewsController.updateUserData
-// );
-
 router.get('/posts/:id', authController.isLoggedIn, viewsController.getPost);
 router.get(
   '/boards/:id',
