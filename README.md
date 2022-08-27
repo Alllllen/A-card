@@ -31,6 +31,9 @@
 <!-- - Deploy this app to Heroku -->
 <!-- - Implement CORS -->
 <!-- - Use SendGrid第三方Email服務 -->
+
+## 🛠️System Architecture
+
 ## 🛠️ Experiments
 ### MongoDB indexing
 - post numbers :100000
@@ -67,8 +70,9 @@
 
 ## 🦶 Roadmap
 - [x] System Design
-- [x] Implement most of the function
-- [ ] Unit test
-- [ ] Implement tag function
+- [x] Implement services: Account Management, Chat, Post, Pair 
+- [X] Experiments
+- [ ] Unit test, using Jest
+- [ ] Implement tag
 - [ ] 通知系統
 - [ ] Using AWS S3 store image datas
