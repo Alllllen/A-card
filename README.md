@@ -1,11 +1,11 @@
 # A card
 
 
-### 📚Description
+## 📚Description
    Acard is an app made by imitating social media "Dcard"
 <!-- - [Acard](https://a-card.herokuapp.com/ "link") -->
 
-### ✨Application
+## ✨Application
 - Register/Login account
 - Account center can change personal information/upload headshots
 - Post/Edit/Delete articles
@@ -15,7 +15,7 @@
 - 好友聊天機制
 <!-- - You can use the forgotten password, and a verification mail will be sent to the registered mailbox -->
 
-### 💡Technical Stacks
+## 💡Technical Stacks
 - Frontend - Pug, Boostrap
 - Backend - Node.js, express.js, MongoDB, Redis
 - Use MongoDB and it's ODM Mongoose to manipulate data
@@ -31,14 +31,41 @@
 <!-- - Deploy this app to Heroku -->
 <!-- - Implement CORS -->
 <!-- - Use SendGrid第三方Email服務 -->
+## 🛠️ Experiments
+### MongoDB indexing
+- post numbers :100000
+- project : {title:1,board:1,likeNum:1,user:1,createdAt:1}
+- sort : {createdAt:-1}
+- skip : 60000
+- limit : 10
 
-### 🛠️ Set up
+| Index Type | Execution Time |
+| ------------- | ------------- |
+| Without Index  | 184ms  |
+| Index  | 37ms  |
+| Covered Index  | 55ms  |
+
+- post numbers :100000
+- project : {title:1,board:1,likeNum:1,user:1,createdAt:1}
+- sort : {likeNum:-1,createdAt: -1}
+- skip : 60000
+- limit : 10
+
+| Index Type | Execution Time |
+| ------------- | ------------- |
+| Without Index  | 416ms  |
+| Conpound Index  | 43ms  |
+| Covered Index  | 55ms  |
+
+### Redis Caching
+### redis with Lua script
+## 🛠️ Set up
 -     git clone
 -     npm install
 -     docker run
 -     setting config.env file
 
-### 🦶 Roadmap
+## 🦶 Roadmap
 - [x] System Design
 - [x] Implement most of the function
 - [ ] Unit test
