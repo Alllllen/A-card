@@ -42,3 +42,23 @@ schedule.makePair();
 const relationController = require('./controllers/relationController');
 // relationController.clearPair();
 // relationController.makePair();
+
+// const post = require('./models/postModel');
+// function getRandomArbitrary(min, max) {
+//   return Math.random() * (max - min) + min;
+// }
+// for (let i = 0; i < 13; i++) {
+//   let like = parseInt(getRandomArbitrary(0, 5000));
+//   let rand = getRandomArbitrary(0, 16615005002);
+//   let time = parseInt(Date.now() - rand);
+//   // console.log(time);
+//   post.create({
+//     title: `post - ${i}`,
+//     content: `content - ${i}`,
+//     user: '62403eb8a17497624c31a6c6',
+//     board: '62429f46f73709769d33b31c',
+//     tag: ['6241a929ee80052724ffd894', '6241a924ee80052724ffd891'],
+//     likeNum: like,
+//     createdAt: time,
+//   });
+// }

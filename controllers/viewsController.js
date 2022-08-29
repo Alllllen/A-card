@@ -2,8 +2,6 @@ const Post = require('../models/postModel');
 const Board = require('../models/boardModel');
 const Relation = require('../models/relationModel');
 const catchAsync = require('../utils/catchAsync');
-
-//redis
 const { hgetall, setex, get } = require('.././utils/redis');
 
 const getOrSetCache = (key, cb) => {
@@ -25,40 +23,28 @@ exports.getSideBar = catchAsync(async (req, res, next) => {
   res.locals.boards = boards;
   next();
 });
-exports.getOverview = catchAsync(async (req, res, next) => {
-  const page = req.params.id || 1;
-  const limit = 5;
-  const skip = (page - 1) * limit;
-  const currentDate = new Date();
+async function getOverviewPost(Post, skip, limit, currentDate) {
+  const pre = await Post.aggregate([
+    {
+      $project: {
+        user: 1,
+        title: 1,
+        createdAt: { $subtract: [currentDate, '$createdAt'] },
+        board: 1,
+        likeNum: 1,
+      },
+    },
+    {
+      $sort: { likeNum: -1, createdAt: -1 },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ]);
 
-  //redis search
-  // const posts = await getOrSetCache(`${req.originalUrl}`);
-  const count = await getOrSetCache('post:count', Post.find().count());
-  const pre = await getOrSetCache(
-    'overview',
-    Post.aggregate([
-      {
-        $project: {
-          user: 1,
-          title: 1,
-          like: 1,
-          createdAt: { $subtract: [currentDate, '$createdAt'] },
-          board: 1,
-          title: 1,
-          numLikes: { $size: '$like' },
-        },
-      },
-      {
-        $sort: { numLikes: -1 },
-      },
-      {
-        $skip: skip,
-      },
-      {
-        $limit: limit,
-      },
-    ])
-  );
   await Post.populate(pre, {
     path: 'user',
     select: 'photo',
@@ -67,12 +53,55 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     path: 'board',
     select: 'board',
   });
+  return posts;
+}
+exports.getOverview = catchAsync(async (req, res, next) => {
+  const page = req.params.id || 1;
+  const limit = 5;
+  const skip = (page - 1) * limit;
+  const currentDate = new Date();
+  //redis search
+  const count = await getOrSetCache('post:count', Post.find().count());
+  const posts = await getOrSetCache(
+    'post:overview',
+    getOverviewPost(Post, skip, limit, currentDate)
+  );
+  // const posts = await getOverviewPost(Post, skip, limit, currentDate);
+  // const pre = await Post.aggregate([
+  //   {
+  //     $project: {
+  //       user: 1,
+  //       title: 1,
+  //       createdAt: { $subtract: [currentDate, '$createdAt'] },
+  //       board: 1,
+  //       likeNum: 1,
+  //     },
+  //   },
+  //   {
+  //     $sort: { likeNum: -1, createdAt: -1 },
+  //   },
+  //   {
+  //     $skip: skip,
+  //   },
+  //   {
+  //     $limit: limit,
+  //   },
+  // ]);
 
+  // await Post.populate(pre, {
+  //   path: 'user',
+  //   select: 'photo',
+  // });
+  // const posts = await Post.populate(pre, {
+  //   path: 'board',
+  //   select: 'board',
+  // });
+  pages = Math.ceil(count / 5) + 1;
   // 3) Build and Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'A-CARD',
     posts,
-    count,
+    pages,
     req,
   });
 });
@@ -143,7 +172,7 @@ exports.getCard = catchAsync(async (req, res, next) => {
   });
 });
 exports.getMessage = catchAsync(async (req, res, next) => {
-  const inRoom = true; //req.url.split('messages/')[1] !== undefined;
+  const inRoom = req.url.split('messages/')[1] !== undefined;
   const relations = await Relation.find({
     $and: [
       {

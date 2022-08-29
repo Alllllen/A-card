@@ -12,6 +12,10 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, 'content can not be empty!'],
     },
+    likeNum: {
+      type: Number,
+      default: 0,
+    },
     like: [
       {
         type: mongoose.Schema.ObjectId,
@@ -21,7 +25,7 @@ const postSchema = new mongoose.Schema(
     ],
     createdAt: {
       type: Date,
-      default: Date.now,
+      default: Date.now(),
     },
     user: {
       type: mongoose.Schema.ObjectId,

@@ -2,6 +2,7 @@ const Post = require('./../models/postModel');
 const crud = require('./crudAction');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const { del } = require('.././utils/redis');
 
 const multer = require('multer');
 const multerStorage = multer.memoryStorage();
@@ -28,11 +29,13 @@ exports.setUserIds = (req, res, next) => {
 };
 
 exports.updateLike = catchAsync(async (req, res, next) => {
+  await del('post:overview');
   post = await Post.findById(req.body.post);
   req.body.like = post.like.slice(0);
   // console.log(req.body.like.id);
   // if (!req.body.like.includes(req.user.id)) {
   req.body.like.push(req.user.id);
+  req.body.likeNum = req.body.likeNum + 1;
   // }
   req.params.id = req.body.post;
   next();

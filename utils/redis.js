@@ -20,6 +20,8 @@ module.exports = {
     await auth(client);
     await auth(sub);
   },
+  del: (key = 'key') =>
+    new Promise((a, b) => client.del(key, resolvePromise(a, b))),
   incr: (key = 'key') =>
     new Promise((a, b) => client.incr(key, resolvePromise(a, b))),
   decr: (key = 'key') =>

@@ -36,7 +36,7 @@ block content
                       .pricing.d-flex.justify-content-between.align-items-center
                         .left
                           span.colors5.mb-3 LIKE :
-                            span.time=post.like.length
+                            span.time=post.likeNum
                         if(req.user && req.user.role==='admin')
                           button(id=post._id).btn.colors1.mb-4 Delete
 
@@ -44,10 +44,21 @@ block content
           nav(aria-label='Page navigation')
             ul.pagination.pagination-reset.justify-content-center
               li.page-item.disabled
-                -for (let page = 1;page < Math.ceil(count/5) + 1;page++) {
-                      li.page-item
-                        a.page-link(href=`/overview/${page}`)=page
+                li.page-item
+                  a.page-link(href=`/overview/1`)=1              
+                -if (pages < 10){
+                  -for (let page = 2;page < pages;page++) {
+                        li.page-item
+                          a.page-link(href=`/overview/${page}`)=page
+                  -}
                 -}
+                -else{
+                  li.page-item
+                    a.page-link(href=`/overview/1`) ...                                      
+                  li.page-item
+                    a.page-link(href=`/overview/${pages-500}`)=pages-500
+                -}
+
                 li.page-item
                   a.page-link(href='#')
                     i.zmdi.zmdi-long-arrow-right
