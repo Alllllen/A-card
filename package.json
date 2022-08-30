@@ -47,6 +47,9 @@
     "jest": "^28.1.2",
     "nodemon": "^2.0.15",
     "parcel-bundler": "^1.12.5",
+    "swagger-autogen": "^2.21.5",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0",
     "vitest": "^0.17.1"
   }
 }
