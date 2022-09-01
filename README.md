@@ -27,7 +27,6 @@
 - Use jwt to implement authentication
 - Dockerized the app(開了幾個Docker container: Redis Acard)
 - Avoid information security issues like SQL injection/XSS/CSRF etc. 
-- Compress the js file to speed up in frontend part
 <!-- - Deploy this app to Heroku -->
 <!-- - Implement CORS -->
 <!-- - Use SendGrid第三方Email服務 -->
