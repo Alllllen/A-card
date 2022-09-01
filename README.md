@@ -63,6 +63,7 @@
 ### Redis Caching
 - 首頁響應時間
 - 已使用indexing
+
 | Caching       | Execution Time |
 | ------------- | -------------  |
 | w/o caching   | 250ms          |
