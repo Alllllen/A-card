@@ -20,7 +20,7 @@ const postSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        unique: true,
+        // unique: true,
       },
     ],
     createdAt: {

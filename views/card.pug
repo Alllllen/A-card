@@ -8,8 +8,10 @@ block content
         img(src=`/img/users/${pair.photo}`, alt='User photo',width="80%" ,height="80%")
         h2.heading-secondary.ma-bt-lg=pair.name
           .form__group
-            if pair.statement==="agree"
+            if pair.status==='2'
               | 已成為好友
+            else if pair.status==='3'
+              | 無緣
             else 
               form.agreeFriend        
                 button.btn.btn--small.btn--green 加好友

@@ -93,14 +93,22 @@ let disagreeRelationLua =
    local user = ARGV[1] \
    local pair = "user:"..user..":".."pair" \
    local pairInfo = redis.call("hmget", pair, "pairUser", "statement", "status") \
-   local pairUser = "user:"..pairInfo[2]..":".."pair"  \
+   local pairUser = "user:"..pairInfo[1]..":".."pair"  \
    redis.call("hset",pair, "status","3")\
    redis.call("hset",pairUser, "status","3")\
-   status = "3" \
+   local status = "3" \
    return status';
-
+//  let disagreeRelationLua =
+//  '\
+//   local user = ARGV[1] \
+//   local pair = "user:"..user..":".."pair" \
+//   local pairInfo = redis.call("hmget", pair, "pairUser", "statement", "status") \
+//   local pairUser = "user:"..pairInfo[2]..":".."pair"  \
+//   redis.call("hset",pair, "status","3")\
+//   redis.call("hset",pairUser, "status","3")\
+//   status = "3" \
+//   return status';
 function loadLuaScript(script, user) {
-  console.log(script === 'agreeRelationLua');
   if (script === 'agreeRelationLua') {
     client.script('load', agreeRelationLua, function (err, sha) {
       console.log(`Load - agreeRelationLua - sha:` + sha);

@@ -29,14 +29,16 @@ exports.setUserIds = (req, res, next) => {
 };
 
 exports.updateLike = catchAsync(async (req, res, next) => {
-  await del('post:overview');
   post = await Post.findById(req.body.post);
   req.body.like = post.like.slice(0);
-  // console.log(req.body.like.id);
-  // if (!req.body.like.includes(req.user.id)) {
+  if (
+    req.body.like.filter(
+      (e) => JSON.stringify(e) === JSON.stringify(req.user._id)
+    ).length > 0
+  )
+    return next(new AppError('Already thump up', 400));
   req.body.like.push(req.user.id);
-  req.body.likeNum = req.body.likeNum + 1;
-  // }
+  req.body.likeNum = post.likeNum + 1;
   req.params.id = req.body.post;
   next();
 });

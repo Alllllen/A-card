@@ -26,7 +26,7 @@ const relationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  isFriend: { type: Boolean, default: false },
+  isPair: { type: Boolean, default: true }, // 是否是本輪的配對
 });
 
 relationSchema.pre(/^find/, function (next) {

@@ -39,9 +39,10 @@ io.use(
 
 //shcedule
 schedule.makePair();
+schedule.clearCache();
 const relationController = require('./controllers/relationController');
-// relationController.clearPair();
-// relationController.makePair();
+relationController.clearPair();
+relationController.makePair();
 
 // const post = require('./models/postModel');
 // function getRandomArbitrary(min, max) {

@@ -21,16 +21,7 @@ const app = express();
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger_output.json');
 
-app.use(
-  '/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument)
-  // swaggerUi.DisplayRequestDuration()
-);
-
-// const apicache = require('apicache');
-// const cache = apicache.middleware;
-// app.use(cache('5 minutes'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // app.enable('trust proxy');
 app.set('view engine', 'pug');
@@ -41,13 +32,13 @@ app.use(cors());
 //access-controal-allow-origin *
 app.options('*', cors());
 
-// Set security HTTP headers
-app.use(helmet());
-// Data sanitization against NoSQL query injection
+// // Set security HTTP headers
+// app.use(helmet());
+// // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
-// Data sanitization against XSS
-app.use(xss());
-// Limit requests from same API
+// // Data sanitization against XSS
+// app.use(xss());
+// // Limit requests from same API
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
